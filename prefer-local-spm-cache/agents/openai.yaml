@@ -1,0 +1,4 @@
+interface:
+  display_name: "优先复用本地 SPM 缓存"
+  short_description: "在 iOS 构建与测试前优先补充桌面 SourcePackages 缓存"
+  default_prompt: "使用 $prefer-local-spm-cache 在运行 iOS 的 xcodebuild 验证前优先补充本地 SwiftPM 缓存。"

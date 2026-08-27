@@ -1,0 +1,4 @@
+interface:
+  display_name: "Git Commit Spec"
+  short_description: "Write Conventional Commit messages"
+  default_prompt: "Use $git-commit-spec to draft a Conventional Commits 1.0.0 message for these changes."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "UIKit 布局规范"
+  short_description: "按场景使用 SnapKit 或 frame，适配不同尺寸 iPhone"
+  default_prompt: "使用 $uikit-layout-standards 选择合适的 SnapKit 或 frame 布局，以设计稿校准视觉，并完成不同尺寸 iPhone、safe area 与 RTL 适配。"

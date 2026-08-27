@@ -1,0 +1,4 @@
+interface:
+  display_name: "项目记忆"
+  short_description: "加载当前 Git 项目经验，并在人工确认后沉淀知识与踩坑记录"
+  default_prompt: "使用 $project-memory 加载当前项目经验，或预览本次任务的候选知识并在我确认后录入。"

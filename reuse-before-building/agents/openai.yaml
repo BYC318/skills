@@ -1,0 +1,4 @@
+interface:
+  display_name: "复用优先"
+  short_description: "新增实现前检索现有能力并审查可复用的依赖与适配方案"
+  default_prompt: "使用 $reuse-before-building 在编写新实现前完成复用与依赖方案评估。"

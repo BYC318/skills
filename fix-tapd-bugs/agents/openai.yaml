@@ -1,0 +1,4 @@
+interface:
+  display_name: "TAPD Bug 修复闭环"
+  short_description: "管理 TAPD Bug 的审查、修复、人工验收与安全回写闭环"
+  default_prompt: "使用 $fix-tapd-bugs 处理我提供的 TAPD Bug 链接；若未提供链接，则拉取并审查我负责的未完成 Bug。"

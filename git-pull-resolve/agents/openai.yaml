@@ -1,0 +1,4 @@
+interface:
+  display_name: "Git Pull 线性同步"
+  short_description: "通过 Rebase 线性同步、定位解决冲突并提供提交信息建议"
+  default_prompt: "使用 $git-pull-resolve 拉取并通过 rebase 保持线性历史，指出冲突位置和解决方案，验证后给出 commit message 建议，但不要提交代码。"

@@ -1,0 +1,6 @@
+interface:
+  display_name: "iOS 模拟器流程验证"
+  short_description: "构建、点击并验证 iOS 模拟器业务流程"
+  default_prompt: "使用 $ios-simulator-flow-verifier；仅在用户明确要求或整批改动进入交付检查点时，由唯一验证代理选择最低必要层级运行，复用相同代码状态的 xcresult，并报告运行证据。"
+policy:
+  allow_implicit_invocation: false

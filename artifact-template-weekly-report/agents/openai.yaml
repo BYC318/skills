@@ -1,0 +1,7 @@
+interface:
+  display_name: "weekly-report"
+  short_description: "Create emails with the weekly-report template"
+  icon_large: "./assets/preview.png"
+  default_prompt: "Use $artifact-template-weekly-report to create an email with this template."
+policy:
+  allow_implicit_invocation: true

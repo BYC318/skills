@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "kind": "email",
+  "reference": "assets/reference.txt",
+  "preview": "assets/preview.png"
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "R.swift 资源引用"
+  short_description: "生成并维护类型安全的 iOS 资源引用，避免字符串硬编码"
+  default_prompt: "使用 $rswift-resource-references 为当前 iOS target 检查并生成类型安全的资源引用。"

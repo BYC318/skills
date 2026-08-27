@@ -1,0 +1,4 @@
+interface:
+  display_name: "业务意图注释"
+  short_description: "先理解业务证据，再同步注释关键决策、边界与实现效果"
+  default_prompt: "使用 $commenting-business-intent 在修改代码时同步编写有业务证据、便于评审的注释。"
