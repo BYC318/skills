@@ -1,28 +1,29 @@
 ---
 name: kothar-figma-to-code
-description: 做 Android XML / iOS UIKit 原生界面时的还原度增强能力（配合官方 Figma MCP / 项目已有流程用，不接管其路由）。用兼容工具 f2c_get_reference_code 对齐精确数值、取参考实现、暴露该端还原难点；用 kothar_export_pending_images 导 pending 资源。整个开发任务的实现、构建、测试和常规修复全部完成后，若本地已有连接的真机或已启动模拟器，则把本地视觉比对作为最后一步：校验截图身份，把实现效果与 Figma 原稿并排展示并标记差异，集中询问一次是否需要优化；未经明确同意不修改业务代码。工具不可用或无本地设备则正常继续，绝不阻塞。
+description: 做 Android XML / iOS UIKit 原生界面时的 Kothar 默认设计上下文能力。用 kothar_get_design_context（兼容 f2c_get_reference_code）对齐精确数值、取参考实现、暴露该端还原难点；用 kothar_export_pending_images 导 pending 默认资源，用 kothar_export_figma_images 导项目特殊倍率/路径资源。官方 Figma MCP 仅用于选区、完整图层树、变量、写操作和未覆盖端补充。整个开发任务的实现、构建、测试和常规修复全部完成后，若本地已有连接的真机或已启动模拟器，则把本地视觉比对作为最后一步：校验截图身份，把实现效果与 Figma 原稿并排展示并标记差异，集中询问一次是否需要优化；未经明确同意不修改业务代码。工具不可用或无本地设备则正常继续，绝不阻塞。
 ---
 
-# Kothar：Android XML / iOS UIKit 的还原度增强（非流程入口）
+# Kothar：Android XML / iOS UIKit 的默认设计上下文
 
 Kothar 对单个 Figma 节点算好精确布局数值、给出目标端参考实现、并点名该端还原不了的坑，供你做 **Android XML / iOS UIKit** 时对齐。它是**增强参考**，最终代码由你（及项目已有流程）判断。
 
-## 定位：增强，不抢路由
+## 定位：原生编码默认先用 Kothar
 
-- **项目已有 figma / 设计稿相关 skill 或流程时，让那个流程继续主导入口与路由**；Kothar 只作为其中「取精确数值 / 参考实现 / 查还原难点」的一步增强，**不要接管、覆盖或改写项目已有流程**。
-- 只有当本项目**没有** figma 相关流程时，Kothar 才作为兜底入口直接用。
+- 做 **Android XML / iOS UIKit**，且已经拿到单个 Figma frame / component 链接或 `filekey + node_id` 时，默认先用 Kothar 获取原生设计上下文，不先走官方 Figma MCP 或直接访问 Figma REST 来生成原生代码上下文。
+- **项目已有 figma / 设计稿相关 skill 或流程时，让那个流程继续主导入口与路由**；但在进入 Android XML / iOS UIKit 落地前，应把 Kothar 作为其中「取精确数值 / 参考实现 / 查还原难点」的前置步骤，**不要覆盖或改写项目已有流程**。
+- Kothar 未覆盖的选区、变量、写操作和未覆盖端能力仍可由官方 Figma MCP 或项目资源工具补充；项目特殊倍率/路径导图优先用 `kothar_export_figma_images`，不能把“默认不直连”理解成“任何场景都禁止官方能力”。
 - 无论哪种情况，项目的命名 / 换算 / 组件等**专属约定优先**，Kothar 只补通用还原纪律与精确数值。
 
 ## 和官方 Figma MCP 的分工
 
-- **官方 Figma MCP 更强的地方**：读当前选区、打开 / 唯一读取文件上下文、拿完整图层树和变量 token、做 Figma 写操作、处理 Web / React / HTML / SwiftUI 等 Kothar 未覆盖端，以及补充项目特殊资源管线。
-- **Kothar 更强的地方**：Android XML / iOS UIKit 的目标端原生参考、精确布局数值、端上还原难点、pending 图片子集判断、2x/3x + SVG 导出与服务端 version 缓存。
-- 推荐顺序：**官方 MCP 定位节点 / 补 token 与原始结构 → Kothar 出原生参考与 pending 资源 → 回到项目代码按本项目组件落地**。不要用官方 MCP 的 Web 向代码手翻成原生作为主路径；不要用 Kothar 代替官方 MCP 做选区、变量、写 Figma 或 Web 端实现。
+- **Kothar 更强的地方**：Android XML / iOS UIKit 的目标端原生参考、精确布局数值、端上还原难点、pending 图片子集判断、2x/3x + SVG 默认导出、特殊倍率/路径导图封装与服务端 version 缓存。
+- **官方 Figma MCP 更强的地方**：读当前选区、打开 / 唯一读取文件上下文、拿完整图层树和变量 token、做 Figma 写操作、处理 Web / React / HTML / SwiftUI 等 Kothar 未覆盖端。
+- 推荐顺序：**已有节点链接 → Kothar 出原生参考与 pending 资源 → 特殊资源用 kothar_export_figma_images → 官方 MCP 按需补选区、变量或原始结构 → 回到项目代码按本项目组件落地**。只知道当前选区时，才先用官方 MCP 定位单个节点。不要用官方 MCP 的 Web 向代码手翻成原生作为主路径；不要用 Kothar 代替官方 MCP 做选区、变量、写 Figma 或 Web 端实现。
 
 ## 总控工作流：把各方优势串起来
 
-- **官方 Figma MCP 负责入口与上下文**：选区、完整图层树、变量 token、截图、motion / prototype / library、Figma 写操作、Web / SwiftUI / Kothar 未覆盖端，都优先交给官方 Figma MCP 或项目已有流程。
-- **Kothar 负责原生实现包**：目标为 Android XML / iOS UIKit 时，对单个 frame / component 调 `f2c_get_reference_code`，把返回内容整理成“Kothar 实现包”：Figma 节点、目标端、版本、官方 MCP 补充上下文摘要、Kothar 参考源码、精确数值、pending 图片、ews 还原难点、代码改动计划。
+- **Kothar 负责原生实现包**：目标为 Android XML / iOS UIKit 时，对单个 frame / component 调 `kothar_get_design_context`（兼容 `f2c_get_reference_code`），把返回内容整理成“Kothar 实现包”：Figma 节点、目标端、版本、Kothar 参考源码、精确数值、pending 图片、ews 还原难点、代码改动计划。
+- **官方 Figma MCP 负责补缺口，特殊导图走 Kothar 封装**：选区、完整图层树、变量 token、截图、motion / prototype / library、Figma 写操作、Web / SwiftUI / HTML / Kothar 未覆盖端交给官方 Figma MCP 或项目已有流程；特殊图片倍率 / 格式 / 路径优先交给 `kothar_export_figma_images`，避免客户端直接访问 Figma REST。
 - **Codex 负责落代码与自测**：按实现包先处理 `auto_fix` 与 `need_asset`，运行目标端最小构建 / 单测；完成普通问题修复后，再进入收尾视觉比对。
 - **设计师修稿也给 AI 提示词**：遇到 `design_issue` 或 `unsupported_native`，不要只写“请设计师手工修复”；同时给一段可复制给 Codex 的提示词，让设计师能用官方 Figma MCP 辅助修稿。
 
@@ -60,9 +61,12 @@ Kothar 对单个 Figma 节点算好精确布局数值、给出目标端参考实
 
 ## 怎么调
 
-- 调 `f2c_get_reference_code`，按端传 `target`：Android XML → `android-xml`，iOS UIKit → `ios-uikit`；尽量带一句 `intent`（说明这次实现什么）。
+- 调 `kothar_get_design_context`（兼容老工具名 `f2c_get_reference_code`），按端传 `target`：Android XML → `android-xml`，iOS UIKit → `ios-uikit`；尽量带一句 `intent`（说明这次实现什么）。
 - **只传单个 frame / component 节点**；拿到整页 / 画板根 / 复杂稿时，先按要实现的区域**拆成单个子 frame、逐个调用**，别把整页根一次性丢进去。
-- 返回的 pending 图清单是“需要导图”的子集，不是整棵设计树；需要落资源文件时调 `kothar_export_pending_images`，只导 pending 节点，生产位图默认 2x + 3x，`优先矢量` 节点默认导 SVG，不要批量把所有节点都生成两套位图。优先传带 `version-id` 的 Figma 链接；没版本时工具会先经 Kothar 服务端解析 Figma 当前最新版，再按解析到的 version 复用服务端共享图片缓存，不靠 TTL；复用共享缓存前会校验当前 Figma Token 对 filekey 的访问权限或使用同次导出的短期 access grant。工具返回给 AI 的“文件”主清单已经按内容 `sha256` 去重，只集成主清单资源；`dedupedFiles` / 去重映射里的重复项必须引用 `canonicalOutputPath`，不能复制 `skippedOutputPath`；同时按 `reuseKey` 做语义去重，相同 key 只接入一个资源名 / 路径。
+- **Android XML mask 不是 overlay**：参考源码里出现 `F2cMaskFrameLayout` / `F2cMaskLinearLayout` 和 `app:maskDrawable` 时，表示用 mask alpha 对子内容做 `DST_IN` 裁剪 / 渐隐；业务工程需要接入等价运行时 helper 或复用项目已有遮罩容器。不要把 mask drawable 当普通 background / foreground 叠在内容上方，否则会把内容整体盖灰、变淡。
+- **渐变文字高还原优先导图**：Android XML 的 `TextView` 不能原生表达 Figma 渐变文字。Kothar 给出的纯色文字只是可编译保底降级，不代表已经高还原；固定装饰性渐变文字优先作为图片资源接入，动态文本确实不能导图时再评估项目内自定义渐变文字 View。
+- 返回的 pending 图清单是“需要导图”的子集，不是整棵设计树；需要落默认资源文件时调 `kothar_export_pending_images`，只导 pending 节点，生产位图固定按高还原导 2x + 3x，`优先矢量` 节点默认导 SVG，不要批量把所有节点都生成两套位图。项目若明确需要低倍率 / 包体 / 特殊密度 / 特殊格式规则，先用 pending 清单确定节点，再调 `kothar_export_figma_images` 显式传节点、倍率和输出路径；项目目录 / 密度 / 小图片 / 九宫图 / 特殊命名都由项目规则决定，并通过 `scale` 与 `output_path` 表达，Kothar 不内置项目专属映射。不要把项目降级规则下沉为 Kothar pending 默认，也不要让客户端直接访问 Figma REST。优先传带 `version-id` 的 Figma 链接；没版本时工具会先经 Kothar 服务端解析 Figma 当前最新版，再按解析到的 version 复用服务端共享图片缓存，不靠 TTL；复用共享缓存前会校验当前 Figma Token 对 filekey 的访问权限或使用同次导出的短期 access grant。工具返回给 AI 的“文件”主清单已经按内容 `sha256` 去重，只集成主清单资源；`dedupedFiles` / 去重映射里的重复项必须引用 `canonicalOutputPath`，不能复制 `skippedOutputPath`；同时按 `reuseKey` 做语义去重，相同 key 只接入一个资源名 / 路径。
+- **导图边取边处理**：每次只调用一批。`kothar_export_pending_images` 返回后先把本批文件接入工程、完成对应代码引用，再按 `next_start_index` 继续；`kothar_export_figma_images` 返回后也先处理本批，再提交剩余规格。不要一次请求几十或上百张，也不要等所有图片获取完成后才开始集成；所有批次保持同一 Figma version 和输出目录。
 - **bgv 底图动画（WebP）：单文件导出，优先复用项目已有 WebP 播放能力、系统 API 自建仅兜底**：pending 里 path 以 `.webp` 结尾、或 node id 形如 `ures:<文件名>` 的，是设计师上传的 WebP 底图动画（`bgv(...)`）；`kothar_export_pending_images` 已按单文件导出（一份 `.webp`、不生成 2x/3x）。参考源码里的 `F2cWebPView` / `F2cAnim` / `f2cwebp:` tag 是 Kothar **预览宿主自带 helper**，你的工程没有、别照搬。**① 首选复用项目已有的 WebP / 动图播放库或封装**（Android 如 Glide/Fresco/Coil/自研 animplayer，iOS 如 SDWebImage/自研）——大多数项目已内置，通常已覆盖低版本、比自建更稳；Kothar 的系统 API 实现只是无现成能力时的兜底参考、不保证更优，有现成的就用现成的。**② 项目确无现成能力才按系统能力自建**并按最低系统版本分支：Android `minSdk≥28` 用 `ImageDecoder`+`AnimatedImageDrawable`（`<28` 只出静态首帧，要动画须抬 minSdk 或接库）；iOS `≥14` 用 ImageIO `CGAnimateImageDataWithBlock`（`<14` 系统完全不支持 WebP 解码、连首帧都没有，须抬部署目标或接库如 SDWebImage+WebPCoder）。**都搞不定就明说（系统/AI 能力边界、非设计问题）**：别默默出静态图充数，向用户点明并让其在『接项目 / 三方库 / 抬最低系统版本 / 接受静态首帧』中决策。
 - 每处理一个节点都形成简短“Kothar 实现包”，再按 `auto_fix` / `need_asset` / `design_issue` / `unsupported_native` 分类执行；`design_issue` 和 `unsupported_native` 必须带“给设计师的 Codex 修复提示词”。
 - **调用后：一律按返回里带的「Kothar 使用指引」执行**——怎么用精确数值、图片资源怎么处理、还原难点怎么办、调用纪律、target 策略、与官方 Figma 分工等，**都以返回内容为准**（它随 Kothar 迭代下发，比本说明新）。
@@ -83,8 +87,11 @@ Kothar 对单个 Figma 节点算好精确布局数值、给出目标端参考实
 
 ## 工具不在 / 失败怎么办
 
-- 当前会话里**根本没有** `f2c_get_reference_code`（调都调不到）→ 才说明没装 / 没重启，**只提醒一次**：
-  > Kothar 还没就绪。请安装 Kothar AI 工具后重启 Codex。
+- 当前会话里**根本没有** `kothar_get_design_context` 或 `f2c_get_reference_code`（调都调不到）→ 才说明没装 / 没重启，**只提醒一次**：
+  > Kothar 还没就绪。请把这句话发给 Codex：`帮我安装或更新 Kothar MCP：https://f2c.quhong.net/mcp/`
 
   提醒完照常继续，不等待、不阻塞。
-- 工具**在**、但返回「暂无参考 / 超时 / 目标端不支持」等 → 都是该节点的**正常降级**，直接跳过、继续开发，**别重试、也别据此让用户重装**。
+- 工具**在**、但返回失败 → 严格读取 `status`、`retryable`、`user_action_required` 和
+  `ai_next_action`。只有 `status: degraded` 的参考能力失败可以继续开发；`status: blocked`
+  必须先完成提示动作。需要用户介入时，把 `copy_prompt` 原样展示给用户，禁止在聊天中索取
+  或显示 Token、密码。图片导出失败始终阻塞，不能在资源缺失时声称实现已经完成。
