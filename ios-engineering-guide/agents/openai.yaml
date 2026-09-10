@@ -1,0 +1,7 @@
+interface:
+  display_name: "iOS 工程指南"
+  short_description: "任何 iOS 编码任务开始前，主动加载相关知识卡预防工程问题"
+  default_prompt: "使用 $ios-engineering-guide，在当前 iOS 编码任务开始前先理解实现路径，主动加载相关知识卡预防问题并指导验证。"
+
+policy:
+  allow_implicit_invocation: true
