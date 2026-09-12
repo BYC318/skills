@@ -40,13 +40,15 @@ description: 修复 TAPD Bug 并在修复模式下完成规范提交、TAPD 已�
 
 ## Debug Ad Hoc 交付
 
-若项目存在 `fastlane/adhoc_debug_delivery`，必须优先用它，不直接用“最近 N 条提交”调用 Fastlane。该 CLI 的 manifest 模式接收精确 commit SHA 集合，沿用现有文案规则：跳过 merge、清洗 Conventional Commit 前缀、精确去重；多条优先归纳为编号中文说明，归纳失败退回原标题。
+新批次先检查构建目录的 `ios-delivery.json`：若已安装其中 `tool_version` 锁定的独立工具，优先调用该版本的 `bin/ios-delivery`。默认安装位置为 `~/.local/share/ios-delivery/<tool_version>/`；不能仅凭 PATH 中同名命令推断版本一致。未安装时，若项目存在旧 `fastlane/adhoc_debug_delivery`，继续用旧入口，不要求同事改变现有 Fastlane 打包方式，不自动安装工具或改 Gemfile。
+
+两种入口的 manifest 模式均接收精确 commit SHA 集合，不直接用“最近 N 条提交”调用 Fastlane。沿用文案规则：跳过 merge、清洗 Conventional Commit 前缀、精确去重；多条优先归纳为编号中文说明，归纳失败退回原标题。
 
 ```bash
 ruby "$PROJECT_DIR/fastlane/adhoc_debug_delivery" --project-dir "$PROJECT_DIR" --manifest "$MANIFEST_PATH"
 ```
 
-`--resume <batch-id>` 只恢复用户级状态目录中的同一 manifest。CLI 必须校验冻结 HEAD/源码指纹、IPA SHA-256 和既有 buildKey；发布超时或上传响应异常均为非成功状态，先查询既有 buildKey，禁止盲目重建或重传。Debug 包不得上传 Crashlytics dSYM。
+`--resume <batch-id>` 只恢复用户级状态目录中的同一 manifest。记录本批实际使用的入口及工具版本，续跑必须用原入口；缺少新工具项目/配置身份的旧回执仍由旧 CLI 对账，不自动迁移或新建批次重传。CLI 必须校验冻结 HEAD/源码指纹、IPA SHA-256 和既有 buildKey；发布超时或上传响应异常均为非成功状态，先查询既有 buildKey，禁止盲目重建或重传。Debug 包不得上传 Crashlytics dSYM。
 
 项目未提供该 CLI 时，不伪造共享交付能力：报告该批次仅完成代码/TAPD 部分，或等待用户指定打包方式。
 

@@ -18,7 +18,7 @@
 
 ## 并行交付
 
-以项目 `fastlane/adhoc_debug_delivery --project-dir <Gemfile目录> --manifest <manifest.json>` 启动打包，保留执行会话并等待结果；同时执行 TAPD 链路。不要通过创建用户新任务来实现内部并行。
+新批次按 SKILL.md 检查配置和安装版本后，选择独立 `ios-delivery` 或旧项目 `fastlane/adhoc_debug_delivery`，传 `--project-dir <构建目录> --manifest <manifest.json>` 启动打包，保留执行会话并等待结果；同时执行 TAPD 链路。把实际入口、工具版本及配置文件位置记录在同批独立的 `delivery-entry.json`（仅非敏感元数据，0600），不要覆盖 batch.json 或 delivery.json。不要通过创建用户新任务来实现内部并行。
 
 TAPD 每 Bug 重读后执行 `check-snapshot {bug_id,snapshot}`。若 `remote_changed` 为 true 则跳过该 Bug。每个操作先写 `intent {bug_id,operation,payload_sha256,snapshot}`，operation 为 `comment`、`attachment`、`resolve:<action>` 或 `resolve`；出现 already done / inflight 时不再次调用外部写接口。
 
@@ -28,7 +28,7 @@ TAPD 每 Bug 重读后执行 `check-snapshot {bug_id,snapshot}`。若 `remote_ch
 
 ## 恢复与报告
 
-用户 `--resume <id>` 后先 show 同一 batch.json，对照本次授权范围、冻结 manifest 与远端实际状态；保留已完成 commit、评论和上传。CLI 的 `--resume <id>` 读取同批 `delivery-manifest.json`，只处理打包分支，不代替 TAPD 恢复。新需求或重开 Bug 建立新的修复批次。
+用户 `--resume <id>` 后先 show 同一 batch.json，对照本次授权范围、冻结 manifest 与远端实际状态；保留已完成 commit、评论和上传。按 delivery-entry.json 使用创建批次的原入口；没有该记录的历史批次先从既有manifest/版本证据确认来源，不自动切换新工具。CLI 的 `--resume <id>` 读取同批 `delivery-manifest.json`，只处理打包分支，不代替 TAPD 恢复。新需求或重开 Bug 建立新的修复批次。
 
 读取 delivery.json，只有 `pgyer.state == published` 且回执有安装页时，调用 `report {delivery_status:"published"}`；其他状态传实际值。原批有阻塞项或任何交付步骤未确认，最终仍是 PARTIAL。报告包含成功子集、阻塞项、本地 commit（未push）、实际验证限制和安装链接。
 
