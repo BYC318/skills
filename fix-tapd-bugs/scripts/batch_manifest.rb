@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 # 冻结无人值守交付批次。只写调用方指定的仓库外 manifest，不执行 Git 提交、
-# TAPD 写回或打包；可由技能在完成成功子集 commit 后重复调用。
+# TAPD 写回或打包；技能须先确认成功子集 rebase、验证和 push，再以最终 SHA 创建一次。
 
 require "digest"
 require "fileutils"

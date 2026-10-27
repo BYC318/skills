@@ -6,15 +6,26 @@
 
 每批在 `~/.codex/state/fix-tapd-bugs/<repo-key>/<batch-id>/` 建立 0700 目录。`batch.json` 为修复/TAPD 日志，`manifest.json` 为技能冻结的成功子集输入，`delivery-manifest.json` 为打包 CLI 校验、补全描述和仓库身份后的规范化冻结副本，`delivery.json` 为打包回执；分开写入避免并行覆盖。文件 0600；不得保存凭据、原始附件或敏感业务数据。
 
+普通调用必须先完成一次 TAPD 实时发现和用户范围确认，再执行 `init`。发现阶段不得读取历史状态目录来生成、裁剪或补全候选 Bug；历史记录也不得让当前 TAPD 中新增、重开或更新的 Bug 消失。只有用户显式传入 `--resume <batch-id>` 时，才能以对应 `batch.json` 为续跑范围，并仍需按恢复流程对照 TAPD 当前状态。
+
 `scripts/batch_state.rb COMMAND --state <batch.json> --input <json-file>` 接收结构化 JSON；输入文件用 apply_patch 创建或通过工具 stdin 传入，避免把评论拼入 shell 命令。
 
 - `init`：`{repo,batch_id,source_head,source_fingerprint,initial_changes,require_acceptance,bugs:[{id,url,snapshot}]}`。snapshot 是影响判断的字段/附件版本的摘要；将本批自己新增的评论和合法中间状态排除，并单独记录实际远端状态。
 - `update`：`{bug_id,status:"FIXING"}` 开始修复。通过验证时传 `status:"VALIDATED",verification:{tests,build,static,review,residual_risks}`，四类证据必须有本次结果或明确不适用理由。阻塞时传 `status:"BLOCKED",reason`。
 - `check-commit`：提交前以 `{bug_id}` 检查；非零禁止提交。仅验收模式需要 `accepted {bug_id,user_confirmed:true}`，此字段只在用户实际确认后记录。默认模式无需此步骤。
 - 实际 Git commit 完成后记录 `committed {bug_id,commit_shas:[完整SHA]}`；同根因 Bug 分别映射到同一 SHA。
-- 尝试完所有 Bug 后 `freeze` 固定成功子集。阻塞 Bug 不写 TAPD；没有成功项则停止交付。
+- 尝试完所有 Bug 后，按 [远端同步规则](remote-sync.md) 先执行下述同步命令，确认 push 后才 `freeze` 固定成功子集。阻塞 Bug 不写 TAPD；没有成功项则停止交付。
 
-冻结源码使用 `scripts/batch_manifest.rb --repo <root> --batch-id <id> --out <manifest.json> --state-path <delivery.json> --bug <id=url> --commit <sha> --bug-commit <id=sha>`。重复这些参数覆盖全部成功 Bug 和提交，不使用最近 N 条。它解析 SHA、记录 staged/unstaged/untracked 指纹并拒绝覆盖已有 manifest。验证摘要与原始工作树清单留在 batch.json。
+## 同步记录
+
+状态脚本只记录证据，不代执行 Git，也不代核验远端。实际 fetch/rebase/push、提交可达性、工作树和远端回读检查必须由调用方执行。
+
+- `sync-start`：`{remote,remote_ref,source_head,source_fingerprint}`。remote 为 Git remote 名称而非含凭据的 URL，remote_ref 为完整 `refs/heads/...`；source_head/指纹来自同步前的实际源码。所有 Bug 须为 COMMITTED/BLOCKED 且至少有一项成功；保存旧 SHA 集合并置为 `SYNCING`。执行前记录意图，中断后复用该记录，不重复 start。
+- `sync-complete`：`{source_head,fetched_head,remote_head,observed_at,commit_mapping,verification}`。source_head 是最终 HEAD，fetched_head 是最终一轮 fetch 的目标 tip，remote_head 是 push 后回读结果且必须等于 source_head；observed_at 为回读的 ISO 8601 时间。commit_mapping 是 sync-start 全部旧 SHA 到最终 SHA 的对象（未变化也显式映射到自身）；verification 含 `tests/build/static/review/mapping` 五项非空证据摘要，mapping 说明逐提交对照或等价修复定位依据。成功后原子更新 Bug SHA 与 `PUSHED` 回执。
+- 同一 `SYNCING` 内的 fetch/rebase/push 重试仍以 before_commits 为映射起点，不只映射最近一轮中间 SHA。记录已 `PUSHED` 但冻结前远端又前进时，可再次 `sync-start`，旧回执归入 sync_history；新回执确认前禁止冻结。修复状态再变化也会使旧同步回执失效。
+- 未收到可核验的 push 回执时保持 `SYNCING`，最终报告为 PARTIAL。已有冻结状态不接受同步或改写；旧版冻结批次没有同步回执时按远端同步规则建立关联新批次，不补造成功记录。
+
+`freeze` 会拒绝没有 `PUSHED` 回执的批次。随后核对实际 HEAD 等于 frozen.source_head，工作树干净，再使用 `scripts/batch_manifest.rb --repo <root> --batch-id <id> --out <manifest.json> --state-path <delivery.json> --bug <id=url> --commit <sha> --bug-commit <id=sha>` 冻结源码。重复这些参数覆盖全部成功 Bug 和最终提交，不使用最近 N 条。它解析 SHA、记录 staged/unstaged/untracked 指纹并拒绝覆盖已有 manifest；它不单独验证 push，不能脱离前述门禁调用。验证摘要与原始工作树清单留在 batch.json。
 
 ## 并行交付
 
@@ -30,6 +41,6 @@ TAPD 每 Bug 重读后执行 `check-snapshot {bug_id,snapshot}`。若 `remote_ch
 
 用户 `--resume <id>` 后先 show 同一 batch.json，对照本次授权范围、冻结 manifest 与远端实际状态；保留已完成 commit、评论和上传。按 delivery-entry.json 使用创建批次的原入口；没有该记录的历史批次先从既有manifest/版本证据确认来源，不自动切换新工具。CLI 的 `--resume <id>` 读取同批 `delivery-manifest.json`，只处理打包分支，不代替 TAPD 恢复。新需求或重开 Bug 建立新的修复批次。
 
-读取 delivery.json，只有 `pgyer.state == published` 且回执有安装页时，调用 `report {delivery_status:"published"}`；其他状态传实际值。原批有阻塞项或任何交付步骤未确认，最终仍是 PARTIAL。报告包含成功子集、阻塞项、本地 commit（未push）、实际验证限制和安装链接。
+读取 delivery.json，只有 `pgyer.state == published` 且回执有安装页时，调用 `report {delivery_status:"published"}`；其他状态传实际值。report 还要求 PUSHED 回执，旧批缺少该回执不能被判为 COMPLETE。原批有阻塞项或任何交付步骤未确认，最终仍是 PARTIAL。报告包含成功子集、阻塞项、最终 commit、目标远端分支和 push 结果、实际验证限制和安装链接。
 
-`--dry-run` 只读取和输出候选范围、分组与命令，不 init、freeze、commit、上传或流转。验收/隔离为自然语言或调用标记，由技能解释；这些不是打包 CLI 参数。
+`--dry-run` 只读取和输出候选范围、分组与命令，不 init、freeze、commit、fetch、rebase、push、上传或流转。验收/隔离为自然语言或调用标记，由技能解释；这些不是打包 CLI 参数。

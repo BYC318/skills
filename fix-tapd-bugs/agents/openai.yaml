@@ -1,4 +1,4 @@
 interface:
   display_name: "TAPD Bug 自动交付"
-  short_description: "修复 Bug、提交、写回已解决并打 Debug Ad Hoc 包"
-  default_prompt: "使用 $fix-tapd-bugs 修复我提供的 TAPD Bug；默认完成 commit、流转已解决并打 Debug Ad Hoc 包。若未提供链接，先列出我负责的未完成 Bug 供我选择。"
+  short_description: "修复 Bug、提交后 rebase 并推送、写回已解决及打包上传"
+  default_prompt: "使用 $fix-tapd-bugs 修复我提供的 TAPD Bug；默认完成 commit、rebase 关联远端分支、解决冲突并验证后 push，再流转已解决及打 Debug Ad Hoc 包上传。若未提供链接，先列出我负责的未完成 Bug 供我选择。"

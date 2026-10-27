@@ -1,4 +1,4 @@
 interface:
-  display_name: "复用优先"
-  short_description: "新增实现前检索现有能力并审查可复用的依赖与适配方案"
-  default_prompt: "使用 $reuse-before-building 在编写新实现前完成复用与依赖方案评估。"
+  display_name: "复用与成本取舍"
+  short_description: "核对已有能力，权衡复用、改造与新写的维护、性能和验收成本，保留项目风格"
+  default_prompt: "使用 $reuse-before-building，先核对已有能力，再按整体收益选择复用、适配、改造或新写，控制改动与验收范围。"

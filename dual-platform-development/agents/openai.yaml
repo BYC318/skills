@@ -1,0 +1,6 @@
+interface:
+  display_name: "双端项目初始化与更新"
+  short_description: "主动初始化或更新双端协作配置，引用各端现有技能，保留项目规则与定制"
+  default_prompt: "使用 $dual-platform-development，初始化或更新当前双端项目的协作配置，保留各端规则与技能的唯一维护位置。"
+policy:
+  allow_implicit_invocation: false
