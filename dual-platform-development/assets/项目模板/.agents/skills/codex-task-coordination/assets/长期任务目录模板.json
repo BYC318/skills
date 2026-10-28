@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "project_config": null,
+  "description": "由主任务维护的长期目录模板；正式使用前核实真实聊天及路径，不能把空值当成已创建或已绑定。",
+  "project_id": null,
+  "main_task_id": "main",
+  "tasks": {
+    "main": {"role": "main", "thread_id": null, "host_id": "local", "status": "待绑定", "scope": "只协调、调度、已授权的Git集成、只读审查及证据台账维护", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []},
+    "shared": {"role": "shared", "thread_id": null, "host_id": "local", "status": "待绑定", "scope": "公共组件、样式、资源及共享工程配置的唯一维护方", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []},
+    "A": {"role": "worker", "thread_id": null, "host_id": "local", "status": "待绑定", "scope": "待填写长期模块归属；后续需求复用本聊天", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []}
+  },
+  "requirements": [],
+  "batches": [],
+  "pending_changes": [],
+  "open_dependencies": [],
+  "recovery_checkpoints": [],
+  "notes": "需求记录entity_id、current_revision、授权来源与归属；batches每项必须记录batch_id和绝对coordination_root，另记参与者、冻结状态、集成基线及交付索引，供recover --registry扫描。未关闭依赖记录原消息、需求修订、请求方/消费者/负责方、交付/消费回执、状态及下一动作；检查点记录任务、已核对聊天范围、未登记纠正、对账结果与恢复入口。目录由主任务维护，不自动唤醒任务或验证依赖完成。project_config由Agent填入本项目配置绝对路径并实际读取；新批保存配置快照和哈希，脚本不自动加载项目规则。"
+}

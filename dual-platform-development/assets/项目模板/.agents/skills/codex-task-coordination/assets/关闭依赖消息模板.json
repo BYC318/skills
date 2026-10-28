@@ -1,0 +1,20 @@
+{
+  "batch_id": "待替换为实际批次ID",
+  "id": "RESOLVED-main-A-001",
+  "sender": "main",
+  "recipient": "A",
+  "kind": "RESOLVED",
+  "entity_id": "CR-001",
+  "revision": 1,
+  "created_at": "待替换为实际带时区ISO时间",
+  "refs": ["REQ-001", "CONSUMED-001"],
+  "payload": {
+    "recovery": {
+      "resolution": "completed",
+      "consumer": "A",
+      "request_ids": ["REQ-001"],
+      "evidence_refs": ["CONSUMED-001"],
+      "reason": "待填写主任务已核验的接入结果、当前修订及验证依据"
+    }
+  }
+}

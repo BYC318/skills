@@ -1,0 +1,16 @@
+{
+  "batch_id": "待替换为实际批次ID",
+  "id": "MSG-A-0001",
+  "sender": "A",
+  "recipient": "main",
+  "kind": "REQUEST",
+  "entity_id": "CR-001",
+  "revision": 1,
+  "created_at": "待替换为实际带时区ISO时间",
+  "refs": [],
+  "payload": {
+    "description": "待填写实际需求、契约依据与能力缺口；UI工作另附页面状态和设计节点",
+    "blocked_scope": "待填写受阻部分与可继续工作",
+    "artifacts": []
+  }
+}

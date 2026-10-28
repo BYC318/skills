@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "project_config": null,
+  "batch_id": "待替换为ASCII批次ID",
+  "main": "main",
+  "task_registry": "待替换为长期任务目录的实际绝对路径",
+  "previous_batch_id": null,
+  "authorization": "待记录本项目用户对本批创建聊天、互发消息、源码修改和集成的直接授权；协作资料提交及外部写入分别核对，不能继承其他项目授权",
+  "actors": {
+    "main": {"role": "main", "thread_id": null, "host_id": "local", "description": "主任务：只协调、调度和执行已授权的Git集成，负责只读审查、证据核对与验收台账；不开发源码或修改冲突文件"},
+    "shared": {"role": "shared", "thread_id": null, "host_id": "local", "description": "共享任务：公共组件与资源维护者"},
+    "A": {"role": "worker", "thread_id": null, "host_id": "local", "description": "执行任务：待登记实际模块范围、源码worktree、可写及只调用范围和验收项"}
+  },
+  "repositories": [],
+  "ownership": [],
+  "requirements": [],
+  "scope_freeze": {"status": "未冻结", "frozen_at": null, "snapshot_path": null, "supersedes_snapshot": null, "pending_next_batch": []},
+  "notification_policy": {"check_after_seconds": 120, "max_notification_retries": 2},
+  "integration_policy": {"mode": "after_all_tasks_complete", "required_final_deliveries": [], "description": "全部参与任务终版交付及共享封版齐备后集中集成；开发期间只沟通必要依赖、阻塞、契约变化和最终结果"},
+  "scope": "待登记需求范围、参与仓库、规则与技能绝对路径、资源排队和验收方式；UI工作按项目配置补充设计状态及截图矩阵"
+}

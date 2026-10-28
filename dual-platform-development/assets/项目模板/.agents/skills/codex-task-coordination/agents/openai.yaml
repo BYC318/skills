@@ -1,0 +1,6 @@
+interface:
+  display_name: "独立 Codex 任务协作"
+  short_description: "主动协调长期独立任务的持久通信、需求修订、恢复对账、共享交付与集中集成"
+  default_prompt: "使用 $codex-task-coordination，按当前项目配置协调本次独立任务协作与接续。"
+policy:
+  allow_implicit_invocation: false

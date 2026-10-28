@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "batch_id": "待替换为实际批次ID",
+  "description": "仅主任务维护；每端每项公共改动接入一次，页面公共副本跳过；只记录实际Git结果",
+  "repositories": [],
+  "readiness": {"required_tasks": [], "final_deliveries": [], "shared_releases_frozen": false, "all_tasks_complete": false, "open_blockers": [], "integration_started_at": null},
+  "planned_actions": [],
+  "shared_canonical": [],
+  "page_commits": [],
+  "skipped_shared_copies": [],
+  "blocked": [],
+  "verification": [],
+  "ui_evidence": []
+}

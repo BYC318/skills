@@ -1,0 +1,9 @@
+{
+  "actor": "A",
+  "entity_id": "CR-001",
+  "revision": 1,
+  "operation": "cherry_pick",
+  "repo_id": "example-repo",
+  "worktree": "待替换为本端实际源码worktree的规范绝对路径",
+  "source_sha": "待替换为已审核的本端完整小写源SHA"
+}
