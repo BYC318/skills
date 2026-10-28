@@ -5,7 +5,7 @@
   "project_id": null,
   "main_task_id": "main",
   "tasks": {
-    "main": {"role": "main", "thread_id": null, "host_id": "local", "status": "待绑定", "scope": "只协调、调度、已授权的Git集成、只读审查及证据台账维护", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []},
+    "main": {"role": "main", "thread_id": null, "host_id": "local", "status": "待绑定", "scope": "跨聊天协调、调度、已授权的Git集成、只读审查及证据台账；不接管已分配给其他执行者的源码，职责限制不延伸到单Agent或模块内部主Agent的自身实现范围", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []},
     "shared": {"role": "shared", "thread_id": null, "host_id": "local", "status": "待绑定", "scope": "公共组件、样式、资源及共享工程配置的唯一维护方", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []},
     "A": {"role": "worker", "thread_id": null, "host_id": "local", "status": "待绑定", "scope": "待填写长期模块归属；后续需求复用本聊天", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []}
   },

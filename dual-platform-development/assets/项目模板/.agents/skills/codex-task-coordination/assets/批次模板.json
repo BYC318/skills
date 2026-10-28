@@ -7,7 +7,7 @@
   "previous_batch_id": null,
   "authorization": "待记录本项目用户对本批创建聊天、互发消息、源码修改和集成的直接授权；协作资料提交及外部写入分别核对，不能继承其他项目授权",
   "actors": {
-    "main": {"role": "main", "thread_id": null, "host_id": "local", "description": "主任务：只协调、调度和执行已授权的Git集成，负责只读审查、证据核对与验收台账；不开发源码或修改冲突文件"},
+    "main": {"role": "main", "thread_id": null, "host_id": "local", "description": "跨聊天协调主任务：调度、已授权的Git集成、只读审查、证据核对与验收台账；不接管已分配给其他执行者的源码。单Agent及模块内部主Agent可在自身范围编码，调整分工须先完成交接"},
     "shared": {"role": "shared", "thread_id": null, "host_id": "local", "description": "共享任务：公共组件与资源维护者"},
     "A": {"role": "worker", "thread_id": null, "host_id": "local", "description": "执行任务：待登记实际模块范围、源码worktree、可写及只调用范围和验收项"}
   },
