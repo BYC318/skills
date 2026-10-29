@@ -1,0 +1,31 @@
+{
+  "batch_id": "待替换为本组批次ID",
+  "id": "READY-FINAL-REVIEW-002",
+  "sender": "main",
+  "recipient": "A",
+  "kind": "READY",
+  "entity_id": "MODULE-001",
+  "revision": 1,
+  "created_at": "待替换为实际带时区ISO时间",
+  "refs": ["WAIT-FINAL-REVIEW-001"],
+  "payload": {
+    "description": "待明确前置条件现已实际满足、本层继续什么、向谁提交何种证据；不重做此前已完成业务",
+    "phase_transition": {
+      "id": "FINAL-REVIEW",
+      "state": "released",
+      "supersedes": "WAIT-FINAL-REVIEW-001",
+      "prerequisites": [{
+        "coordination_root": "待替换为本组或已绑定直接父批次绝对路径",
+        "batch_id": "待替换为来源批次ID",
+        "message_id": "待替换为实际前置决策ID",
+        "entity_id": "待替换为来源实体ID",
+        "revision": 1,
+        "message_sha256": "待替换为实际规范化消息内容SHA256"
+      }],
+      "expected_artifacts": [{
+        "path": "待替换为本层授权范围内的实际产物绝对路径",
+        "required_keys": ["objective", "assignment", "acceptance", "dependencies", "next_step"]
+      }]
+    }
+  }
+}

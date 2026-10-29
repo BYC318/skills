@@ -1,14 +1,21 @@
 {
   "schema_version": 1,
   "batch_id": "待替换为实际批次ID",
-  "description": "仅主任务维护；每端每项公共改动接入一次，页面公共副本跳过；只记录实际Git结果",
+  "description": "仅本组协调者维护；共享消费用cherry-pick -x，最终共享及模块交付用rebase去重并快进回启动目标分支，保留其持续推进的提交，跨仓库公共依赖另记来源版本与各消费仓库接入提交；repositories关联target_branch/startup_sha及最新目标HEAD，integration_worktree填写实际累计结果的工作区绝对路径，可与原源码worktree相同；planned_actions记录安全复用或独立隔离的选择理由、实际分支、独占安排及逐项/整批回写方式；rebases和target_writebacks记录意图、旧新SHA、状态和核验，均由Agent维护；只记录实际Git结果，无共享工作不等待共享封版；多级时仅负责登记目标线的Git集成，上层核对子组冻结清单、HEAD和证据，不重复执行已完成回写的同一目标线集成",
   "repositories": [],
   "readiness": {"required_tasks": [], "final_deliveries": [], "shared_releases_frozen": false, "all_tasks_complete": false, "open_blockers": [], "integration_started_at": null},
   "planned_actions": [],
+  "rebases": [],
+  "target_writebacks": [],
   "shared_canonical": [],
+  "external_dependencies": [],
   "page_commits": [],
   "skipped_shared_copies": [],
   "blocked": [],
   "verification": [],
-  "ui_evidence": []
+  "ui_evidence": [],
+  "repository_owners": [],
+  "child_deliveries": [],
+  "parent_delivery": null,
+  "requirement_coverage": []
 }

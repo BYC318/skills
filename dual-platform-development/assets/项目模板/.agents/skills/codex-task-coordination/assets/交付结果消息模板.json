@@ -1,0 +1,19 @@
+{
+  "batch_id": "待替换为实际批次ID",
+  "id": "RESULT-A-001",
+  "sender": "A",
+  "recipient": "main",
+  "kind": "RESULT",
+  "entity_id": "MODULE-001",
+  "revision": 1,
+  "created_at": "待替换为实际带时区ISO时间",
+  "refs": ["ASSIGN-001"],
+  "payload": {
+    "description": "待填写当前范围的实际结果、剩余项与验收覆盖",
+    "verification": {
+      "status": "passed",
+      "evidence": ["待填写实际执行的核验依据；未验证时改用failed或not_run并说明原因"]
+    },
+    "artifacts": [{"path": "待替换为实际产物绝对路径", "file_sha256": "待替换为实际文件字节SHA256"}]
+  }
+}

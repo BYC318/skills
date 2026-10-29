@@ -7,15 +7,19 @@
   "previous_batch_id": null,
   "authorization": "待记录本项目用户对本批创建聊天、互发消息、源码修改和集成的直接授权；协作资料提交及外部写入分别核对，不能继承其他项目授权",
   "actors": {
-    "main": {"role": "main", "thread_id": null, "host_id": "local", "description": "跨聊天协调主任务：调度、已授权的Git集成、只读审查、证据核对与验收台账；不接管已分配给其他执行者的源码。单Agent及模块内部主Agent可在自身范围编码，调整分工须先完成交接"},
-    "shared": {"role": "shared", "thread_id": null, "host_id": "local", "description": "共享任务：公共组件与资源维护者"},
-    "A": {"role": "worker", "thread_id": null, "host_id": "local", "description": "执行任务：待登记实际模块范围、源码worktree、可写及只调用范围和验收项"}
+    "main": {"role": "main", "thread_id": null, "host_id": "local", "description": "本组协调者（双端项目中为双端协调或端内协调）：调度、已授权的Git集成、只读审查、证据核对与验收台账；不接管已分配给其他执行者的源码。单Agent及模块内部主Agent可在自身范围编码，调整分工须先完成交接"},
+    "A": {"role": "worker", "thread_id": null, "host_id": "local", "description": "模块执行，或本组直接对接的子组端内协调：待登记实际范围、源码worktree、可写及只调用范围和验收项"}
   },
   "repositories": [],
   "ownership": [],
   "requirements": [],
-  "scope_freeze": {"status": "未冻结", "frozen_at": null, "snapshot_path": null, "supersedes_snapshot": null, "pending_next_batch": []},
+  "scope_freeze": {"status": "未冻结", "frozen_at": null, "snapshot_path": null, "snapshot_sha256": null, "supersedes_snapshot": null, "pending_next_batch": []},
   "notification_policy": {"check_after_seconds": 120, "max_notification_retries": 2},
-  "integration_policy": {"mode": "after_all_tasks_complete", "required_final_deliveries": [], "description": "全部参与任务终版交付及共享封版齐备后集中集成；开发期间只沟通必要依赖、阻塞、契约变化和最终结果"},
-  "scope": "待登记需求范围、参与仓库、规则与技能绝对路径、资源排队和验收方式；UI工作按项目配置补充设计状态及截图矩阵"
+  "integration_policy": {"mode": "after_all_tasks_complete", "method": "rebase_then_fast_forward", "target": "startup_current_branch", "shared_consumption": "cherry_pick_x", "required_final_deliveries": [], "description": "本组冻结范围内全部直接参与任务终版交付及实际存在的共享封版齐备后，由指定负责人以rebase集中集成并快进回启动时当前目标分支的最新进度，上层核对子组实际回写结果；集成优先安全复用原目标工作区，候选worktree按需隔离，逐项回写也须先等本批全部终版齐备并复验最终组合；无共享任务时不等待共享交付；开发期间只沟通必要依赖、阻塞、契约变化和最终结果"},
+  "scope": "源码目录按原源码仓库父目录下与仓库并列的worktree/需求简称/平台/任务目录组织，repositories按repo_id登记实际worktree_root，不同父目录分别确定，不固定放在test或协作目录下，已有路径定制保留；共享目录/聊天按需建立，协调工作区优先安全复用，长期目录tasks.workspaces关联真实聊天、资料入口、实际源码路径与分支，批次保存本轮核实快照，不以目录名推导仓库。待登记需求范围、参与仓库、规则与技能绝对路径、资源排队和验收方式；actors按实际模块填写，共享任务可为零，满足仓库内共享代码或跨仓库公共依赖条件时才增加role为shared的独立逻辑ID并登记来源、消费者及接入方式；UI工作按项目配置补充设计状态及截图矩阵；启用多级时冻结coordination_group父子批次绑定和repository_owners；repositories逐仓库记录target_branch、startup_sha、原源码worktree、工作区/暂存区状态和任务worktree起点，目标身份不变但HEAD允许持续推进，元数据由Agent维护而非工具自动执行，各组只登记直接参与者，main填写本组实际协调者逻辑ID",
+  "coordination_group": {"group_id": null, "parent": null, "children": []},
+  "repository_owners": [],
+  "collaboration_assessment": {"decision": null, "reason": null, "task_plan": [], "resource_limits": []},
+  "task_context": null,
+  "requirement_coverage": []
 }

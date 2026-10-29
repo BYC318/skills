@@ -74,7 +74,9 @@ class RecoveryTests(unittest.TestCase):
     def test_delivery_and_legacy_success_text_do_not_close_dependency(self):
         self.request()
         self.send("RELEASE", "shared", "main", "RELEASE")
-        self.send("RESULT", "A", "main", "RESULT", payload={"description": "已完成，一切正常"})
+        # 模拟升级前已落盘的旧交付，不通过现在的新交付发布门槛补造历史。
+        legacy = co.read_json(self.root / "events/A/REQ-1.json")["message"]
+        co.publish_event(self.root, {**legacy, "id": "RESULT", "kind": "RESULT", "payload": {"description": "已完成，一切正常"}})
         report = co.recover(self.root, "main")
         self.assertEqual(len(report["closed_requests"]), 0)
         self.assertEqual(report["open_requests"][0]["consumers"][0]["status"], "已有结果，待主任务核验关闭")

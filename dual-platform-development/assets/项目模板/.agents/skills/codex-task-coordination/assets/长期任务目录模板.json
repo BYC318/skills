@@ -1,18 +1,22 @@
 {
   "schema_version": 1,
   "project_config": null,
-  "description": "由主任务维护的长期目录模板；正式使用前核实真实聊天及路径，不能把空值当成已创建或已绑定。",
+  "description": "由本组协调者维护的长期目录模板；按实际模块登记角色，共享任务可为零，正式使用前核实真实聊天及路径，不能把空值当成已创建或已绑定。",
   "project_id": null,
+  "requirement_short_name": null,
+  "worktree_root": null,
   "main_task_id": "main",
   "tasks": {
-    "main": {"role": "main", "thread_id": null, "host_id": "local", "status": "待绑定", "scope": "跨聊天协调、调度、已授权的Git集成、只读审查及证据台账；不接管已分配给其他执行者的源码，职责限制不延伸到单Agent或模块内部主Agent的自身实现范围", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []},
-    "shared": {"role": "shared", "thread_id": null, "host_id": "local", "status": "待绑定", "scope": "公共组件、样式、资源及共享工程配置的唯一维护方", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []},
-    "A": {"role": "worker", "thread_id": null, "host_id": "local", "status": "待绑定", "scope": "待填写长期模块归属；后续需求复用本聊天", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []}
+    "main": {"role": "main", "thread_id": null, "title": null, "host_id": "local", "status": "待绑定", "task_directory": null, "scope": "本组协调者（双端项目中为双端协调或端内协调）、调度、已授权的Git集成、只读审查及证据台账；不接管已分配给其他执行者的源码，职责限制不延伸到单Agent或模块内部主Agent的自身实现范围", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []},
+    "A": {"role": "worker", "thread_id": null, "title": null, "host_id": "local", "status": "待绑定", "task_directory": null, "scope": "待填写模块执行范围或子组端内协调归属；后续需求复用本聊天", "current_batch_id": null, "resume_record": null, "workspaces": [], "replacement_history": []}
   },
   "requirements": [],
   "batches": [],
   "pending_changes": [],
   "open_dependencies": [],
   "recovery_checkpoints": [],
-  "notes": "需求记录entity_id、current_revision、授权来源与归属；batches每项必须记录batch_id和绝对coordination_root，另记参与者、冻结状态、集成基线及交付索引，供recover --registry扫描。未关闭依赖记录原消息、需求修订、请求方/消费者/负责方、交付/消费回执、状态及下一动作；检查点记录任务、已核对聊天范围、未登记纠正、对账结果与恢复入口。目录由主任务维护，不自动唤醒任务或验证依赖完成。project_config由Agent填入本项目配置绝对路径并实际读取；新批保存配置快照和哈希，脚本不自动加载项目规则。"
+  "notes": "worktree_root填写与原源码仓库并列的实际源码工作区根的规范绝对路径；多个仓库同父目录时可共用，不同父目录时此字段为null并在批次repositories按repo_id分别登记worktree_root，不按test或协作目录固定推导；tasks各项task_directory填写实际资料入口，workspaces逐仓库/用途记录repo_id、git_common_dir、path、branch、start_sha、purpose、batch_id及target_branch，纯协调可为空，复用原目标工作区时填写真实路径；目录组织与对外对应表按worktree-layout参考资料维护，旧记录缺少展示字段时核实后接续，不迁移或重建。requirement_short_name填写本轮共同需求简称，tasks各项title记录核实后的实际侧边栏标题；新建、复用及当前协调窗口均按多级协议的窗口命名规则填写，标题不替代thread_id或改变协议角色；旧目录缺少这些展示字段时仍按真实ID恢复，不重写历史批次。共享任务仅在触发仓库内共享代码或跨仓库公共依赖维护时增加role=shared的独立逻辑ID，记录真实来源仓库/路径、消费者和接入方式；已有共享身份按实际职责复用，无本轮共享工作不加入等待。需求记录entity_id、current_revision、授权来源与归属，并索引原始任务/目标、本层分派和各批验收覆盖；batches每项必须记录batch_id和绝对coordination_root，另记参与者、冻结状态、启动目标分支/固定startup_sha快照引用、持续推进的最新目标HEAD及交付索引，供recover --registry扫描。未关闭依赖记录原消息、需求修订、请求方/消费者/负责方、交付/消费回执、状态及下一动作；检查点记录任务、已核对聊天范围、未登记纠正、对账结果与恢复入口。目录由主任务维护，不自动唤醒任务或验证依赖完成。project_config由Agent填入本项目配置绝对路径并实际读取；新批保存配置快照和哈希，脚本不自动加载项目规则。 多级结构每组独立目录与批次，coordination_group按多级协调协议填写，children仅作索引，脚本不递归；跨组转述在cross_group_links关联两边事件，稳定聊天ID不因组内角色改变而新建。",
+  "coordination_group": {"group_id": null, "parent": null, "children": []},
+  "repository_owners": [],
+  "cross_group_links": []
 }
