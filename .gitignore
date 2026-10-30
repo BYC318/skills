@@ -1,3 +1,8 @@
 .system/
 .DS_Store
 crypto-field-notes
+
+# Python 运行缓存与本地模板压缩包
+__pycache__/
+*.pyc
+/dual-platform-development通用模板.zip
