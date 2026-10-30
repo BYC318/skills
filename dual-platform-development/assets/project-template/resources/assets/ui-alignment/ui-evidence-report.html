@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>双端 UI 截图验收册</title>
+<style>
+
+#ui-evidence{--wa-bg:light-dark(#f7f8f5,#171b17);--wa-paper:light-dark(#ffffff,#202620);--wa-text:light-dark(#202920,#eef3ec);--wa-sub:light-dark(#647063,#aab6a8);--wa-line:light-dark(#dce3d8,#3a4637);--wa-soft:light-dark(#edf2e9,#2c352a);--wa-lime:light-dark(#c4f47a,#b9e978);--wa-onlime:#243812;--wa-error:light-dark(#a23a28,#ffb1a0);--wa-warn:light-dark(#8b600e,#f2cf7d);color:var(--wa-text);font:400 14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;color-scheme:light dark;max-width:100%;background:var(--wa-bg);border:1px solid var(--wa-line);border-radius:16px;overflow:hidden}
+#ui-evidence *{box-sizing:border-box;min-width:0}
+#ui-evidence button,#ui-evidence input,#ui-evidence select{font:inherit;color:inherit}
+#ui-evidence button,#ui-evidence select,#ui-evidence input[type=search]{border:1px solid var(--wa-line);background:var(--wa-paper);border-radius:8px;padding:8px 10px}
+#ui-evidence button:disabled{opacity:.48}
+#ui-evidence button:not(:disabled):hover{background:var(--wa-soft)}
+#ui-evidence button[aria-pressed=true],#ui-evidence .wa-selected{background:var(--wa-lime);color:var(--wa-onlime);border-color:transparent}
+#ui-evidence a{color:inherit;text-underline-offset:3px;overflow-wrap:anywhere}
+#ui-evidence h2,#ui-evidence h3,#ui-evidence p{margin:0}
+#ui-evidence h2{font-size:19px;font-weight:500}#ui-evidence h3{font-size:15px;font-weight:500}
+#ui-evidence .wa-sub{color:var(--wa-sub)}#ui-evidence .wa-small{font-size:12px}
+#ui-evidence .wa-head{padding:20px 22px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--wa-paper)}
+#ui-evidence .wa-brand{display:flex;align-items:center;gap:12px}
+#ui-evidence .wa-monogram{background:var(--wa-lime);color:var(--wa-onlime);border-radius:11px;padding:10px 13px;font-weight:500}
+#ui-evidence .wa-tag{display:inline-block;padding:3px 8px;border-radius:5px;background:var(--wa-soft);font-size:12px;white-space:normal}
+#ui-evidence .wa-summary{padding:12px 22px;display:flex;flex-wrap:wrap;gap:8px 20px;border-block:1px solid var(--wa-line)}
+#ui-evidence .wa-shell{display:grid;grid-template-columns:224px minmax(0,1fr)}
+#ui-evidence .wa-catalog{padding:16px 12px;border-right:1px solid var(--wa-line)}
+#ui-evidence .wa-catalog label{display:block;margin:0 2px 5px;font-size:12px;color:var(--wa-sub)}
+#ui-evidence .wa-catalog input,#ui-evidence .wa-catalog select{width:100%;margin-bottom:10px}
+#ui-evidence .wa-group-title{font-size:12px;color:var(--wa-sub);margin:16px 4px 6px}
+#ui-evidence .wa-page{display:flex;gap:9px;text-align:left;align-items:center;width:100%;margin-bottom:5px;padding:9px 8px;border-color:transparent;border-radius:9px}
+#ui-evidence .wa-no{font-size:12px;min-width:23px;font-variant-numeric:tabular-nums;color:var(--wa-sub)}
+#ui-evidence .wa-page[aria-pressed=true] .wa-no{color:var(--wa-onlime)}
+#ui-evidence .wa-page-copy{display:flex;flex-direction:column;overflow-wrap:anywhere}
+#ui-evidence .wa-page-copy small{font-size:12px;color:var(--wa-sub)}
+#ui-evidence .wa-page[aria-pressed=true] small{color:var(--wa-onlime)}
+#ui-evidence .wa-main{padding:18px 20px;background:var(--wa-paper)}
+#ui-evidence .wa-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+#ui-evidence .wa-note{font-size:12px;color:var(--wa-sub);margin:8px 0 12px;overflow-wrap:anywhere}
+#ui-evidence .wa-toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+#ui-evidence .wa-toolbar button{font-size:12px;padding:6px 10px}
+#ui-evidence .wa-shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#ui-evidence .wa-shot-head{display:flex;align-items:center;gap:5px;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap}
+#ui-evidence .wa-shot-head span{font-weight:500}#ui-evidence .wa-shot-head button{font-size:12px;padding:3px 6px}
+#ui-evidence .wa-image-area{display:flex;justify-content:center;background:var(--wa-soft);border-radius:8px;overflow:hidden}
+#ui-evidence .wa-image-area img{display:block;width:100%;height:auto;object-fit:contain}
+#ui-evidence .wa-reference-crop{position:relative;width:100%;overflow:hidden;background:var(--wa-soft)}
+#ui-evidence .wa-reference-crop img{position:absolute;max-width:none;height:auto}
+#ui-evidence .wa-empty{aspect-ratio:375/812;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:15px;width:100%;color:var(--wa-sub)}
+#ui-evidence .wa-empty strong{font-weight:500;color:var(--wa-text)}
+#ui-evidence .wa-missing-mark{width:34px;height:42px;border:1px dashed var(--wa-line);border-radius:5px;display:grid;place-items:center;font-size:18px}
+#ui-evidence .wa-caption{margin:7px 0;font-size:12px;color:var(--wa-sub);overflow-wrap:anywhere}
+#ui-evidence .wa-import{display:block;border-top:1px solid var(--wa-line);padding:6px 0;margin-top:8px}
+#ui-evidence .wa-import summary{font-size:12px}
+#ui-evidence .wa-import input{width:100%;font-size:12px;margin:8px 0}
+#ui-evidence .wa-overlay-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+#ui-evidence .wa-overlay-controls label{font-size:12px;display:flex;gap:7px;align-items:center}
+#ui-evidence .wa-overlay-controls input{max-width:150px}
+#ui-evidence .wa-overlay-stage{position:relative;max-width:340px;width:100%;margin:auto;overflow:hidden;background:var(--wa-soft)}
+#ui-evidence .wa-overlay-stage img{display:block;width:100%;height:auto}
+#ui-evidence .wa-overlay-stage img+img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+#ui-evidence .wa-overlay-empty{padding:28px 14px;border:1px dashed var(--wa-line);border-radius:9px;text-align:center;color:var(--wa-sub)}
+#ui-evidence .wa-zoom{padding:14px;border:1px solid var(--wa-line);border-radius:9px;margin:12px 0}
+#ui-evidence .wa-zoom-head{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:12px}
+#ui-evidence .wa-zoom .wa-image-area{max-width:460px;margin:auto}
+#ui-evidence .wa-tabs{display:flex;gap:3px;flex-wrap:wrap;border-bottom:1px solid var(--wa-line);margin:20px 0 12px}
+#ui-evidence .wa-tabs button{border:0;border-radius:7px 7px 0 0;background:transparent;padding:9px 10px}
+#ui-evidence .wa-tabs button[aria-pressed=true]{background:var(--wa-soft);color:var(--wa-text);box-shadow:inset 0 -2px var(--wa-text)}
+#ui-evidence table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+#ui-evidence th,#ui-evidence td{text-align:left;padding:9px 7px;border-bottom:1px solid var(--wa-line);vertical-align:top;overflow-wrap:anywhere}
+#ui-evidence th{font-weight:500;color:var(--wa-sub)}
+#ui-evidence .wa-kv{display:grid;grid-template-columns:105px minmax(0,1fr);gap:8px 12px;font-size:12px}
+#ui-evidence .wa-kv dt{color:var(--wa-sub)}#ui-evidence .wa-kv dd{margin:0;overflow-wrap:anywhere}
+#ui-evidence .wa-errors{padding:12px 14px;background:var(--wa-bg);border-radius:8px;margin-top:12px;font-size:12px}
+#ui-evidence ul{margin:7px 0;padding-left:19px}
+#ui-evidence .wa-history{padding-left:17px;border-left:2px solid var(--wa-line);margin:12px 0;font-size:12px}
+#ui-evidence .wa-history-item{margin-bottom:12px}
+#ui-evidence .wa-flow{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+#ui-evidence .wa-flow button{font-size:12px;padding:7px 9px}
+#ui-evidence .wa-step-info{padding:12px 14px;background:var(--wa-soft);border-radius:8px;font-size:12px}
+#ui-evidence .wa-demo-state{margin-top:16px;padding-top:12px;border-top:1px solid var(--wa-line)}
+#ui-evidence .wa-demo-state select{width:100%;margin:8px 0}
+#ui-evidence .wa-foot{padding:12px 22px;border-top:1px solid var(--wa-line);font-size:12px;color:var(--wa-sub)}
+#ui-evidence .wa-error{color:var(--wa-error)}#ui-evidence .wa-warning{color:var(--wa-warn)}
+#ui-evidence .wa-empty-search{padding:18px 4px;font-size:12px;color:var(--wa-sub)}
+#ui-evidence .wa-main[data-no-results=true]>:not(.wa-no-results){display:none!important}
+#ui-evidence .wa-main:not([data-no-results=true])>.wa-no-results{display:none}
+#ui-evidence [hidden]{display:none!important}
+@media(max-width:780px){#ui-evidence .wa-shell{grid-template-columns:1fr}#ui-evidence .wa-catalog{border-right:0;border-bottom:1px solid var(--wa-line)}#ui-evidence .wa-filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}#ui-evidence .wa-page-group{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}#ui-evidence .wa-page{margin:0}#ui-evidence .wa-main{padding:16px}#ui-evidence .wa-catalog input{margin-bottom:8px}}
+@media(max-width:520px){#ui-evidence .wa-head{padding:16px}#ui-evidence .wa-summary{padding:10px 16px;gap:5px 14px}#ui-evidence .wa-page-group{grid-template-columns:repeat(2,minmax(0,1fr))}#ui-evidence .wa-shots{grid-template-columns:1fr}#ui-evidence .wa-image-area{max-width:290px;margin:auto}#ui-evidence .wa-empty{aspect-ratio:auto;min-height:130px}#ui-evidence .wa-shot{border-bottom:1px solid var(--wa-line);padding-bottom:12px}#ui-evidence .wa-tabs button{padding:9px 7px}#ui-evidence .wa-kv{grid-template-columns:80px minmax(0,1fr)}}
+@media(pointer:coarse){#ui-evidence button,#ui-evidence select{min-height:44px}#ui-evidence input[type=search]{font-size:16px}}
+
+html{color-scheme:light dark}body{margin:0;padding:16px;background:light-dark(#fafbf8,#171b17)}
+#ui-evidence{max-width:1500px;margin:auto}
+#ui-evidence .wa-variant-bar{display:flex;gap:8px;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--wa-line)}
+#ui-evidence .wa-variant-bar button{font-size:12px}
+#ui-evidence .wa-meta-line{overflow-wrap:anywhere;font-size:12px;color:var(--wa-sub);margin:8px 0}
+#ui-evidence .wa-matrix{margin:12px 0}
+#ui-evidence .wa-preview-link{display:block}
+#ui-evidence .wa-page-copy small{white-space:normal}
+#ui-evidence .wa-shot-head a{font-size:12px}
+#ui-evidence .wa-status-pass{background:var(--wa-lime);color:var(--wa-onlime)}
+#ui-evidence .wa-scope{padding:0 22px 14px;overflow-wrap:anywhere;background:var(--wa-paper);font-size:12px;color:var(--wa-sub)}
+#ui-evidence .wa-matrix button{padding:4px 7px;font-size:12px}
+#ui-evidence .wa-legend{padding:8px 20px;font-size:12px;color:var(--wa-sub);border-bottom:1px solid var(--wa-line)}
+#ui-evidence .wa-error-list li{overflow-wrap:anywhere}
+#ui-evidence .wa-history-item button{margin-bottom:5px}
+@media(max-width:520px){body{padding:8px}#ui-evidence .wa-main{padding:12px}#ui-evidence .wa-variant-bar{padding:10px 12px}}
+</style>
+</head>
+<body>
+<section id="ui-evidence" aria-label="双端 UI 截图验收册">
+ <header class="wa-head"><div class="wa-brand"><span class="wa-monogram" aria-hidden="true">UI</span><div><h2 id="title"></h2><p class="wa-sub wa-small">逐页面状态 · 日夜间 · LTR / RTL · 原始证据留存</p></div></div><span class="wa-tag" id="inventory"></span></header>
+ <p class="wa-scope" id="scope"></p><div class="wa-summary" id="summary"></div>
+ <div class="wa-variant-bar" id="variants" aria-label="主题与布局方向"></div>
+ <p class="wa-legend">每个状态须保留 iOS / Android 的四种组合，共 8 张运行图；单端任务只统计参与平台。原始截图不覆盖，比较图与原稿分开保存。</p>
+ <div class="wa-shell"><aside class="wa-catalog" aria-label="页面目录"><label for="search">搜索页面或状态</label><input type="search" id="search" placeholder="页面、状态或证据 ID"><label for="module">模块</label><select id="module"></select><label for="status">整体状态</label><select id="status"></select><div id="catalog"></div><p class="wa-sub wa-small" id="catalog-count" aria-live="polite"></p></aside>
+ <main class="wa-main"><div id="empty" hidden><h3>暂无匹配的页面状态</h3><p class="wa-note">首次任务先登记真实设计状态；筛选无结果时调整条件。空台账不会视为全量完成。</p></div><div id="content"><div class="wa-title-row" id="selected-title"></div><p class="wa-note" id="basis-note"></p><div class="wa-toolbar"><button type="button" data-mode="parallel">三图并排</button><button type="button" data-mode="overlay">叠加检查</button><span class="wa-small wa-sub" id="round-caption"></span></div><div class="wa-shots" id="shots"></div><div id="overlay" hidden><div class="wa-overlay-controls"><label>比较平台 <select id="target"></select></label><label>截图透明度 <input id="opacity" type="range" min="0" max="100" value="50"><output id="opacity-value">50%</output></label></div><div id="overlay-images"></div></div><div id="zoom" class="wa-zoom" hidden></div><div class="wa-tabs"><button type="button" data-tab="checks">验收与差异</button><button type="button" data-tab="identity">证据身份</button><button type="button" data-tab="history">历史轮次</button></div><div id="detail"></div></div></main></div>
+ <footer class="wa-foot">本册从页面台账生成。文件与元数据校验只能发现记录问题；实际运行、主题、布局方向、视觉差异与点击行为须由采集者和审查者核实。验收册中的“通过”基于留存的审查记录。</footer>
+</section>
+<script type="application/json" id="evidence-data">__EVIDENCE_DATA__</script>
+<script>
+(() => {
+ const data=JSON.parse(document.getElementById('evidence-data').textContent);
+ const root=document.getElementById('ui-evidence');
+ const $=id=>root.querySelector('#'+id);
+ const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const labels={'light-ltr':'浅色 · LTR','light-rtl':'浅色 · RTL','dark-ltr':'深色 · LTR','dark-rtl':'深色 · RTL'};
+ const platformNames={figma:'Figma 原稿',ios:'iOS',android:'Android'};
+ const checkLabels={layout:'布局',images:'图片',fonts:'字体',interaction:'交互',toast:'缺失功能 Toast',resource_cleanup:'旧资源清理',identity:'证据身份'};
+ const state={selected:data.pages[0]?.id,variant:'light-ltr',query:'',module:'all',status:'all',tab:'checks',mode:'parallel',target:data.task.platforms[0],round:null,opacity:50,zoom:null};
+ const lookup=new Map(data.summary.pages.map(p=>[p.id,p]));
+ function page(){return data.pages.find(p=>p.id===state.selected)}
+ function run(){const p=page();return p?.rounds.find(r=>r.id===(state.round||p.current_round))}
+ function imagePath(record){const p=record?.path;return typeof p==='string'&&p.startsWith('pages/')&&!p.split(/[\\/]/).includes('..')?p.split('/').map(encodeURIComponent).join('/'):null}
+ function capture(platform){return run()?.captures?.[state.variant]?.[platform]}
+ function file(platform,comparison=false){const c=capture(platform);return comparison?(c?.comparison||c?.image):c?.image}
+ function variantInfo(){return (run()?.identity?.variants||page()?.variants)?.[state.variant]}
+ function renderCatalog(){
+  const selected=data.pages.filter(p=>(state.module==='all'||p.module===state.module)&&(state.status==='all'||lookup.get(p.id).status===state.status)&&[p.id,p.module,p.name,p.state,p.state_id].join(' ').toLowerCase().includes(state.query.toLowerCase()));
+  if(selected.length&&!selected.some(p=>p.id===state.selected)){state.selected=selected[0].id;state.round=null;state.zoom=null}
+  $('catalog').innerHTML=[...new Set(selected.map(p=>p.module))].map(group=>`<div class="wa-group-title">${esc(group)}</div><div class="wa-page-group">${selected.filter(p=>p.module===group).map(p=>`<button type="button" class="wa-page" data-page="${esc(p.id)}" aria-pressed="${p.id===state.selected}"><span class="wa-page-copy">${esc(p.name)} · ${esc(p.state)}<small>${esc(p.id)} · ${esc(lookup.get(p.id).status)}</small></span></button>`).join('')}</div>`).join('');
+  $('catalog-count').textContent=`显示 ${selected.length} / ${data.pages.length} 个已登记状态`;
+  $('empty').hidden=selected.length>0;$('content').hidden=selected.length===0;
+  return selected.length>0;
+ }
+ function renderImages(){
+  $('shots').hidden=state.mode!=='parallel';$('overlay').hidden=state.mode!=='overlay';
+  root.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===state.mode));
+  $('shots').innerHTML=['figma',...data.task.platforms].map(platform=>{
+   const f=file(platform),url=imagePath(f),raw=imagePath(capture(platform)?.image);
+   return `<section class="wa-shot"><div class="wa-shot-head"><span>${platformNames[platform]}</span><button type="button" data-zoom="${platform}" ${url?'':'disabled'}>放大</button></div><div class="wa-image-area">${url?`<img src="${url}" alt="${esc(page().name+' '+page().state+' '+labels[state.variant]+' '+platformNames[platform])}" width="${f.width}" height="${f.height}">`:`<div class="wa-empty"><span class="wa-missing-mark" aria-hidden="true">＋</span><strong>${platform==='figma'&&!variantInfo().figma?'待设计依据':'待取证'}</strong><span class="wa-small">${labels[state.variant]}<br>不计入完成证据</span></div>`}</div><p class="wa-caption">${url?`${f.width} × ${f.height} · ${esc(f.sha256.slice(0,12))}…`:'原始文件尚未留存'}</p>${raw?`<a class="wa-small" href="${raw}" target="_blank" rel="noopener">查看原始 PNG</a>`:''}</section>`;
+  }).join('');
+  renderOverlay();
+  const ref=state.zoom?file(state.zoom):null,url=imagePath(ref);
+  $('zoom').hidden=!url;
+  if(url)$('zoom').innerHTML=`<div class="wa-zoom-head"><span>${platformNames[state.zoom]} · ${labels[state.variant]}</span><button type="button" data-close-zoom>收起</button></div><div class="wa-image-area"><img src="${url}" width="${ref.width}" height="${ref.height}" alt="证据放大图"></div>`;
+ }
+ function renderOverlay(){
+  const a=file('figma',true),b=file(state.target,true),au=imagePath(a),bu=imagePath(b);
+  const result=run()?.evaluation?.variants?.[state.variant];
+  let reason='';
+  if(!au||!bu)reason='该主题与方向缺少原稿或对应运行图，无法叠加。';
+  else if(['证据无效','需复验'].includes(result?.status))reason='当前证据无效或需要复验，请先查看差异和身份记录。';
+  else if(Math.abs((a.width/a.height)/(b.width/b.height)-1)>.005)reason='宽高比不一致；先按明确的内容区域规则生成 comparison.png，禁止强行拉伸原图。';
+  $('opacity').disabled=Boolean(reason);$('target').value=state.target;
+  $('overlay-images').innerHTML=reason?`<div class="wa-overlay-empty">${reason}</div>`:`<p class="wa-note">使用留存的比较图（如有）或原图；透明度不会改变原始证据。</p><div class="wa-overlay-stage"><img src="${au}" width="${a.width}" height="${a.height}" alt="Figma 对比底图"><img id="overlay-top" src="${bu}" style="opacity:${state.opacity/100}" width="${b.width}" height="${b.height}" alt="运行图叠加层"></div>`;
+ }
+ function renderDetail(){
+  root.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.tab===state.tab));
+  const p=page(),r=run(),v=variantInfo(),evaluation=r?.evaluation?.variants?.[state.variant],review=r?.review?.[state.variant]||{};
+  let html='';
+  if(state.tab==='checks'){
+   html=`<h3>本状态的四组合验收</h3><table class="wa-matrix"><thead><tr><th>主题 / 方向</th><th>运行图</th><th>验收状态</th></tr></thead><tbody>${Object.keys(labels).map(key=>{const e=(r?.evaluation||lookup.get(p.id)).variants[key];return `<tr><td><button type="button" data-variant="${key}" aria-pressed="${state.variant===key}">${labels[key]}</button></td><td>${e.captures} / ${data.task.platforms.length}</td><td>${e.status}</td></tr>`}).join('')}</tbody></table><table><thead><tr><th style="width:28%">当前组合检查项</th><th style="width:20%">结果</th><th>实际依据</th></tr></thead><tbody>${Object.entries(checkLabels).map(([key,label])=>{const check=review.checks?.[key];return `<tr><td>${label}</td><td>${({pass:'通过',fail:'有差异',not_applicable:'不适用'})[check?.status]||'待检查'}</td><td>${esc(check?.note||'尚未记录')}</td></tr>`}).join('')}</tbody></table><div class="wa-errors"><h3>当前问题 / 下一步</h3><ul class="wa-error-list">${(evaluation?.problems?.length?evaluation.problems:['本组合检查记录齐全；仍以真实运行和实际审查为依据。']).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+  }else if(state.tab==='identity'){
+   const f=v.figma;
+   const url=f?'https://www.figma.com/design/'+encodeURIComponent(f.file_key)+'/Design?'+new URLSearchParams({'node-id':f.node_id,...(f.version_id?{'version-id':f.version_id}:{})}):null;
+   html=`<dl class="wa-kv"><dt>证据 ID</dt><dd>${esc(p.id)}</dd><dt>页面 / 状态</dt><dd>${esc(p.name)} / ${esc(p.state_id)}</dd><dt>组合 / 语言</dt><dd>${labels[state.variant]} / ${esc(v.locale)}</dd><dt>设计基准</dt><dd>${esc(v.baseline_id)} · ${esc(f?.version_id||'原稿与资源快照追溯')}</dd><dt>设计节点</dt><dd>${url?`<a href="${esc(url)}" target="_blank" rel="noopener">${esc(f.file_key+' / '+f.node_id)}</a>`:'待绑定'}</dd><dt>依据说明</dt><dd>${esc(v.basis_note||'待确认')}</dd><dt>轮次 / 审查</dt><dd>${esc(r?.id||'未取证')} / ${esc(review.reviewer||'未审查')} / ${esc(review.reviewed_at||'未记录')}</dd></dl>`;
+   for(const platform of ['figma',...data.task.platforms]){
+    const c=capture(platform),m=c?.metadata;
+    html+=`<details class="wa-import"><summary>${platformNames[platform]} · ${m?'查看采集元数据':'尚无记录'}</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px">${esc(JSON.stringify(c||{},null,2))}</pre></details>`;
+   }
+  }else{
+   html=`<p class="wa-note">当前有效选择：${esc(p.current_round||'无')}。查看历史不会改变页面完成状态；失效和失败轮次均保留。</p><div class="wa-history">${p.rounds.length?p.rounds.map(item=>`<div class="wa-history-item"><button type="button" data-round="${esc(item.id)}" aria-pressed="${r?.id===item.id}">${esc(item.id)} · ${esc(item.evaluation.status)}${item.id===p.current_round?' · 当前轮次':' · 历史轮次'}</button><p>${esc(item.created_at)}</p><p>${esc(item.invalidated_reason||'原始证据与各组合审查记录已保留')}</p></div>`).join(''):'尚无运行截图轮次'}</div>`;
+  }
+  $('detail').innerHTML=html;
+ }
+ function render(){
+  if(!renderCatalog())return;
+  const p=page(),r=run(),v=variantInfo(),status=r?.evaluation?.variants?.[state.variant]?.status||'待对齐';
+  $('selected-title').innerHTML=`<div><p class="wa-sub wa-small">${esc(p.module)} / ${esc(p.id)}</p><h2>${esc(p.name)} · ${esc(p.state)}</h2></div><span class="wa-tag ${status==='已通过'?'wa-status-pass':''}">${labels[state.variant]} · ${esc(status)}</span>`;
+  $('basis-note').textContent=v.figma?`设计依据：${v.basis_note}；基准 ${v.baseline_id}。`:'此组合的设计稿或明确适配依据未绑定，仍须留存运行图，不能直接判定对齐通过。';
+  $('round-caption').textContent=r?`${r.id} · ${r.id===p.current_round?'当前轮次':'历史轮次'}`:'尚未取证';
+  root.querySelectorAll('[data-variant]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.variant===state.variant));
+  renderImages();renderDetail();
+ }
+ $('title').textContent=data.task.name+' · UI 验收册';
+ $('scope').textContent='任务范围：'+data.task.scope;
+ $('inventory').textContent=data.summary.inventory_complete?'范围已盘点':'全量盘点未完成';
+ const expected=data.pages.length*4*data.task.platforms.length;
+ $('summary').innerHTML=`<span>已登记状态：${data.pages.length}</span><span>已留存运行图：${data.summary.captures} / ${expected}（含待复验）</span><span>四组合均通过：${data.summary.passed} / ${data.pages.length}</span><span>${data.summary.complete?'本任务范围全部通过':'本任务尚未全部完成'}</span>`;
+ $('variants').innerHTML=Object.entries(labels).map(([key,label])=>`<button type="button" data-variant="${key}" aria-pressed="${key===state.variant}">${label}</button>`).join('');
+ $('module').innerHTML='<option value="all">全部模块</option>'+[...new Set(data.pages.map(p=>p.module))].map(x=>`<option>${esc(x)}</option>`).join('');
+ $('status').innerHTML='<option value="all">全部状态</option>'+['待对齐','待设计依据','待截图','待验收','有差异','证据无效','需复验','已通过'].map(x=>`<option>${x}</option>`).join('');
+ $('target').innerHTML=data.task.platforms.map(x=>`<option value="${x}">${platformNames[x]}</option>`).join('');
+ root.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;if(b.dataset.page){state.selected=b.dataset.page;state.round=null;state.zoom=null}else if(b.dataset.variant){state.variant=b.dataset.variant;state.zoom=null}else if(b.dataset.mode){state.mode=b.dataset.mode}else if(b.dataset.tab){state.tab=b.dataset.tab}else if(b.dataset.round){state.round=b.dataset.round;state.zoom=null}else if(b.dataset.zoom){state.zoom=b.dataset.zoom}else if(b.hasAttribute('data-close-zoom')){state.zoom=null}render()});
+ $('search').addEventListener('input',e=>{state.query=e.target.value;render()});
+ $('module').addEventListener('change',e=>{state.module=e.target.value;render()});
+ $('status').addEventListener('change',e=>{state.status=e.target.value;render()});
+ $('target').addEventListener('change',e=>{state.target=e.target.value;renderOverlay()});
+ $('opacity').addEventListener('input',e=>{state.opacity=Number(e.target.value);$('opacity-value').textContent=state.opacity+'%';const top=$('overlay-top');if(top)top.style.opacity=state.opacity/100});
+ render();
+})();
+</script>
+</body>
+</html>
