@@ -1,6 +1,6 @@
 ---
 name: project-memory
-description: Use when Codex 需要在开始项目任务前加载既有经验，或在任务收尾时审阅候选知识并经用户确认后沉淀到项目隔离的 Obsidian 知识库。
+description: Use when Codex 需要按项目与平台加载既有经验，或在任务收尾时把可复用经验分类为通用、iOS、Android 或跨端知识，并经用户确认后沉淀到 Obsidian 知识库。
 ---
 
 # 项目记忆
@@ -9,11 +9,39 @@ description: Use when Codex 需要在开始项目任务前加载既有经验，�
 
 用稳定的 Git 仓库身份隔离知识；加载时只取与当前任务相关的内容，沉淀时先预览、后确认、再录入。知识库根目录默认为当前用户“文稿”目录下的 `~/Documents/Obsidian/GS/TaskSummary/`。macOS Finder 中本地化显示的“文稿”对应文件系统目录 `~/Documents`；不得手工拼接或写死 `/Users/<用户名>`。
 
+知识分为两个维度，不能混用：
+
+- `knowledge_scope`：`common` 表示可跨项目复用，`project` 表示只适用于当前 Git 项目。
+- `platform`：`common` 表示与平台无关，`ios` 表示 iOS，`android` 表示 Android，`cross-platform` 表示必须同时考虑两端的协作或契约。
+
+知识库布局固定为：
+
+```text
+TaskSummary/
+├── _common/
+│   ├── INDEX.md
+│   ├── ios/                 # iOS 通用经验
+│   ├── android/             # Android 通用经验
+│   └── shared/              # 平台无关及跨端协作经验
+└── <project-directory>/
+    ├── INDEX.md
+    ├── ios/                 # 当前项目的 iOS 经验
+    ├── android/             # 当前项目的 Android 经验
+    └── shared/              # 当前项目的平台无关及跨端经验
+```
+
+`_common` 不是某个 Git 项目的目录。通用卡的 `project_id` 固定为 `common`、`repository_remote` 为空；项目卡必须使用当前识别结果的 `project_id`。已有卡没有 `knowledge_scope` 或 `platform` 时视为“待分类旧卡”，不得仅凭文件名、标签或某个技术词自动当作 iOS、Android 或通用经验使用。
+
+两层知识库使用相同的平台子目录：`ios` → `ios/`，`android` → `android/`，`common` 与 `cross-platform` → `shared/`。通用卡放在 `_common/` 下，项目卡放在识别所得的 `project_dir` 下，均只在实际有卡片时创建子目录。`shared/` 内仍靠字段区分平台无关方法和跨端协作方法，不因目录共用而合并适用范围。各层根目录只维护一份 `INDEX.md`，不重复建立子目录索引；项目卡移入平台子目录后仍保留原项目身份，不转为跨项目通用卡。
+
 ## 选择操作
 
 - 请求包含“加载、读取、回忆、开发前”时，执行加载。
 - 请求包含“沉淀、记录、总结、收尾”时，执行沉淀。
 - 仅调用 `$project-memory` 或意图不明确时，必须询问用户选择“加载项目经验”或“沉淀本次经验”；不得根据会话阶段猜测。
+- 用户明确要求为现有卡补字段、分类或调整目录时，执行已授权的维护，保留正文、验证状态与来源，同步索引；新增或改写经验结论仍执行沉淀预览流程。
+- 任务明确涉及多个平台时，同时处理 `ios`、`android` 和命中的 `cross-platform` 经验；只涉及一端时，不把另一端经验当作当前端实现依据。
+- 任务没有明确平台但会影响页面、接口、构建或运行时行为时，先根据目标文件和工程入口判断；仍无法判断时，在加载结果中标记“平台待确认”，不擅自合并两端结论。
 
 ## 识别项目
 
@@ -33,16 +61,31 @@ python3 <技能目录>/scripts/project_identity.py --cwd "$PWD"
 
 ## 加载项目经验
 
-1. 识别项目，只访问输出中的 `project_dir`。
-2. 目录或 `INDEX.md` 不存在时，报告“当前项目暂无已沉淀经验”；不得为了加载而创建文件。
-3. 先读 `INDEX.md` 的标题、标签、摘要、适用范围和链接，再结合用户任务、相关文件与技术栈选择知识卡。优先选择同时命中多个维度且更新较新的条目。
-4. 默认读取最相关的最多 5 张知识卡；不遍历其他项目，也不读取本项目全部卡片。超过 5 张时先列出候选摘要，请用户决定是否继续加载。
-5. 检查每张卡的 `project_id` 和 `status`。将 `needs-verification` 或可能过期的结论明确标记为待验证，不直接当成事实。
-6. 返回：相关结论、必须避免的坑、适用边界、当前任务检查项及来源文件。
+1. 识别项目，只访问输出中的 `project_dir`，以及同一知识库根目录下固定的 `_common` 目录；不遍历其他项目目录。
+2. 分别读取 `_common/INDEX.md` 和当前项目 `INDEX.md`。某一目录或索引不存在时，只报告该层暂无已沉淀经验，不创建目录或索引。
+   通用索引链接相对 `_common/` 解析，项目索引链接相对当前 `project_dir` 解析，两者均使用 `ios/YYYY-MM-DD-知识主题.md` 等带平台子目录的路径。仅读取索引中命中的卡片，并核对实际子目录与 `platform` 对应；链接解析后必须仍在所属知识库根目录内，目录与字段不符时报告冲突，不把目录名代替字段。两层中的 iOS 任务均选择 `ios/` 与 `shared/` 中的平台无关卡，Android 任务均选择 `android/` 与 `shared/` 中的平台无关卡；跨端任务再选择命中的跨端卡。仍须按下面的任务相关性筛选，不整目录加载。
+   尚未整理的旧项目索引可继续指向项目根目录卡片；校验其项目身份和分类字段后按字段筛选，不在加载时自动移动。新建卡和明确授权的目录整理使用上述子目录布局。
+3. 先从两份索引读取标题、`knowledge_scope`、`platform`、标签、摘要、适用范围和链接，再结合用户任务、目标文件与技术栈选择知识卡：
+   - `platform: common`：平台无关经验，可用于任意端；
+   - `platform: ios`：只用于 iOS 任务；
+   - `platform: android`：只用于 Android 任务；
+   - `platform: cross-platform`：只在双端任务、跨端契约或明确的端间协作任务中使用；
+   - 当前项目卡优先于通用卡，但项目卡不能覆盖更高优先级的当前工程规则。
+4. 默认按相关性读取最多 5 张；明确同时涉及 iOS 和 Android 时，最多读取 6 张，优先分配为 2 张通用/跨端、2 张 iOS、2 张 Android。超过上限时先列出候选摘要，请用户决定是否继续加载。
+5. 校验每张卡的 `project_id`、`knowledge_scope`、`platform` 和 `status`。项目卡必须匹配当前 `project_id`；通用卡必须是 `project_id: common`；不匹配、缺少平台字段、`needs-verification` 或可能过期的结论，明确标记为待验证，不直接当成事实。
+6. 返回：平台判断、通用经验、当前项目经验、必须避免的坑、适用边界、当前任务检查项及来源文件。不得把 iOS 结论改写成 Android 结论，也不得把单端证据升级为跨端经验。
 
 ## 沉淀本次经验
 
 先检查会话证据、相关文件、Git diff 和验证结果。只记录以后可复用的信息；省略聊天过程、常规操作和流水账。只有得到测试、命令输出、代码或可靠项目资料支持的结论才标记为 `verified`；仅有未经验证的会话陈述时标记为 `needs-verification`。一张卡同时包含两种状态时拆成两张卡，不得虚构完成状态。
+
+抽取通用经验时必须先做可迁移性判断：
+
+- 不含 iOS 或 Android 专属 API、工程配置、资源命名、包名、平台生命周期或端内架构的，可标记 `platform: common`。
+- 只在一端被证实、但适合其他同平台项目复用的，标记对应平台（`ios` 或 `android`），仍可放在 `_common`。
+- 只有两端都有证据，或明确属于双端共同契约、分工和验收方法的，才标记 `cross-platform`；不能因为文档标题写了“双端”就直接归类。
+- 只涉及 Waho、Zeco、WH/TK、具体接口字段、Bug 编号、资源名或仓库路径的，保留为当前项目卡，不抽成通用卡。
+- 同一主题在 iOS 与 Android 的实现、验证或失败原因不同，拆成两张平台卡；只有共同规则相同且证据充分时，才增加一张跨端卡。
 
 沉淀必须执行以下两阶段流程。首次请求只生成草稿，绝不写入。
 
@@ -50,7 +93,7 @@ python3 <技能目录>/scripts/project_identity.py --cwd "$PWD"
 
 1. 识别项目并只读检查现有 `INDEX.md` 与相关知识卡，用于排重和判断经验是否已有记录。不得创建目录、知识卡、索引、临时草稿或诊断文件。
 2. 没有可复用知识时，说明本次不建议建档及原因，结束流程，不请求确认。
-3. 对每张候选卡给出编号、收录建议（`建议收录` 或 `不建议收录`）和一句理由，再输出完整 Markdown 草稿。即使不建议收录，也允许用户审阅后明确决定录入。
+3. 对每张候选卡给出编号、收录建议（`建议收录` 或 `不建议收录`）、`knowledge_scope`、`platform` 和一句理由，再输出完整 Markdown 草稿。即使不建议收录，也允许用户审阅后明确决定录入。
 4. 草稿后明确提示：单张卡回复精确口令“确认录入”；多张卡回复“确认录入全部”或“确认录入 1,3”。此时必须停止并等待用户决定。
 5. 用户提出修改时，重新输出受影响知识卡的完整草稿并再次等待确认。旧确认不适用于修订后的草稿。
 6. 只接受上一条规定的精确口令。去除回复首尾空白后，整条消息必须完全匹配，不接受附加文字。“可以、好的、继续、没问题、请录入”等其他回复一律不构成写入授权；必须再次提示正确口令及明确范围。多张卡时，单独回复“确认录入”也无效；编号必须存在、不得重复，并以半角逗号分隔，任何编号无效时整次确认无效，不得部分写入。
@@ -64,16 +107,18 @@ python3 <技能目录>/scripts/project_identity.py --cwd "$PWD"
 
 确认有效且状态未变化时：
 
-1. 创建项目目录（仅沉淀模式允许）。
+1. 创建本次录入所需目录：通用卡在 `_common/` 下、项目卡在当前 `project_dir` 下，均按上述平台映射创建子目录；加载操作不创建目录。
 2. 使用当前会话时区。新笔记命名为 `YYYY-MM-DD-知识主题.md`，将 `/\\:*?"<>|` 和控制字符替换为 `-`；若已存在，追加 `-HHmm`，仍冲突则追加递增序号。写入前再次检查目标不存在，绝不覆盖。
-3. 使用以下结构，删除确实不适用的“踩坑记录”，其余栏目保留：
+3. 使用以下结构，删除确实不适用的“踩坑记录”，其余栏目保留。通用卡使用 `project_id: common` 与空的 `repository_remote`；项目卡使用当前识别结果。`platform` 只能是 `common`、`ios`、`android` 或 `cross-platform`：
 
 ```markdown
 ---
 created: YYYY-MM-DD
-project_id: github.com/company/MyApp
-repository_remote: github.com/company/MyApp
-repository_name: MyApp
+knowledge_scope: common
+platform: ios
+project_id: common
+repository_remote: ""
+repository_name: common
 tags:
   - 关键词
 status: verified
@@ -99,13 +144,15 @@ status: verified
 
 `repository_remote` 使用脚本输出的无凭据值，`local` 或 `manual` 身份时为空字符串；绝不保存用户名、密码或 Token。`status` 仅可为 `verified` 或 `needs-verification`。
 
-4. 创建或更新 `INDEX.md`。其 frontmatter 必须包含相同的 `project_id`、`repository_remote` 和 `repository_name`，允许保留其他合法字段；正文标题固定为 `# 项目知识索引`，每张卡一行，格式为：
+4. 在对应层创建或更新 `INDEX.md`：通用卡只写入 `_common/INDEX.md`，项目卡只写入当前项目目录的 `INDEX.md`。其 frontmatter 必须包含与知识卡相同的 `knowledge_scope`、`project_id`、`repository_remote` 和 `repository_name`，允许保留其他合法字段；正文标题固定为 `# 项目知识索引`，每张卡一行，格式为：
 
 ```markdown
-- [知识主题](YYYY-MM-DD-知识主题.md) — `标签` — 一句话结论；适用范围：简述
+- [知识主题](ios/YYYY-MM-DD-知识主题.md) — `scope=common; platform=ios; 标签` — 一句话结论；适用范围：简述
 ```
 
-5. 已有同主题卡片且结论、证据和边界完全相同时不重复建卡；结论有演进时创建新卡，并在摘要中注明替代或补充关系，不改写旧卡。
+通用与项目索引中的新链接均须带平台子目录，例如 `[知识主题](ios/YYYY-MM-DD-知识主题.md)`；Android 使用 `android/`，平台无关与跨端卡使用 `shared/`。项目索引条目使用 `scope=project`；索引字段必须与卡片一致。
+
+5. 已有同主题且相同 `knowledge_scope`、`platform`、结论、证据和边界完全相同的卡片不重复建卡；结论有演进时创建新卡，并在摘要中注明替代或补充关系，不改写旧卡。通用卡与项目卡即使主题相近，只要适用边界不同也可以并存。
 6. 写后重新读取笔记与索引，确认链接存在、元数据一致且旧文件未被覆盖。
 7. 返回实际录入笔记的绝对路径、摘要，以及具体的项目回馈建议。未确认或未被选中的候选卡不得出现在录入结果中。
 
