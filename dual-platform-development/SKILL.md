@@ -31,6 +31,8 @@ description: 仅在用户主动调用本技能时，初始化或更新已有 App
 | [iOS/AGENTS.md](assets/project-template/iOS/AGENTS.md)、[Android/AGENTS.md](assets/project-template/Android/AGENTS.md) | 在协作目录的 `iOS/AGENTS.md`、`Android/AGENTS.md` 维护各端补充说明与读取方式，由根入口明确引用，不写入源码仓库 |
 | 各端既有规则与技能 | 只读核对已有内容和路径；不要求添加索引，不替换、复制或改写配置 |
 
+根入口中的[移动端错误处理与恢复](assets/project-template/AGENTS.md#移动端错误处理与恢复)以项目入口模板为通用原稿。初始化时随根入口安装；更新时按本次授权合并相关增量，保留项目已有的刷新入口、状态所有权、平台差异及验证要求。通用原则先维护模板，再同步到已授权项目；开发细则不在本技能正文或各端补充中重复维护。
+
 从 `assets/project-template/` 取用资源时包含 `iOS/`、`Android/`、`resources/` 和隐藏目录 `.agents/skills/`。任务记录模板统一维护在 [项目模板资源](assets/project-template/resources/assets/双端任务记录模板.md)，初始化或更新时部署到项目对应位置，日常创建记录只引用项目本地文件。已有同职责流程时，按本次新版目录合并并同步入口链接，保留项目定制。
 
 `codex-task-coordination` 的通用分发原稿维护在本技能的 `assets/project-template/.agents/skills/codex-task-coordination/`。部署时包含 `SKILL.md`、`agents/`、`references/`、`assets/` 和 `scripts/`，排除缓存及验证产物；项目运行不反向依赖本机初始化技能或原项目。已有同名技能先核对来源并按语义合并，保留项目定制和运行记录，不整目录覆盖。根入口和日常流程区分只读规划与实际执行：任务安排、角色和排期咨询须只读协作技能的规划与层级规则；这不等于启用跨聊天执行，实际创建、调度仍按明确授权，不将它改为开发默认流程。项目配置文件名已有定制时保留原位置，同步两处入口链接；不另建一份同职责配置。
