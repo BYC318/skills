@@ -36,17 +36,24 @@ module TapdBatchState
         raise Error, 'batch already exists' if state
         ids = input.fetch('bugs').map { |b| b.fetch('id').to_s }
         raise Error, 'bugs must be nonempty and unique' if ids.empty? || ids.uniq != ids
+        bugs = input.fetch('bugs').map do |bug|
+          raise Error, 'ui_bug must be explicitly true or false' unless bug.key?('ui_bug')
+          ui_bug = bug.fetch('ui_bug')
+          raise Error, 'ui_bug must be explicitly true or false' unless [true, false].include?(ui_bug)
+          {
+            'id' => bug.fetch('id').to_s, 'url' => bug.fetch('url'),
+            'snapshot' => bug.fetch('snapshot'), 'ui_bug' => ui_bug,
+            'status' => 'DISCOVERED', 'accepted' => false,
+            'commit_shas' => [], 'operations' => {}
+          }
+        end
         state = {
-          'schema_version' => 2, 'batch_id' => input.fetch('batch_id'),
+          'schema_version' => 3, 'batch_id' => input.fetch('batch_id'),
           'repo' => repo, 'source_head' => input.fetch('source_head'),
           'source_fingerprint' => input.fetch('source_fingerprint'),
           'initial_changes' => input.fetch('initial_changes', []),
           'require_acceptance' => input.fetch('require_acceptance', false),
-          'bugs' => input.fetch('bugs').map { |b| {
-            'id' => b.fetch('id').to_s, 'url' => b.fetch('url'),
-            'snapshot' => b.fetch('snapshot'), 'status' => 'DISCOVERED',
-            'accepted' => false, 'commit_shas' => [], 'operations' => {}
-          } }
+          'bugs' => bugs
         }
       else
         raise Error, 'batch does not exist' unless state
@@ -106,7 +113,10 @@ module TapdBatchState
         if next_status == 'VALIDATED'
           checks = input.fetch('verification')
           raise Error, 'tests/build/static/review evidence required' unless %w[tests build static review].all? { |key| checks[key].is_a?(String) && !checks[key].strip.empty? }
+          screenshots = checks['ui_screenshots']
+          normalized_screenshots = validate_ui_screenshots!(state, screenshots) if bug['ui_bug'] || screenshots
           bug['verification'] = checks.slice('tests', 'build', 'static', 'review', 'residual_risks')
+          bug['verification']['ui_screenshots'] = normalized_screenshots if normalized_screenshots
         end
         bug['accepted'] = false
         bug['status'] = next_status
@@ -138,6 +148,10 @@ module TapdBatchState
     end
     key = input.fetch('operation')
     raise Error, 'invalid operation' unless %w[comment attachment resolve].include?(key) || key.match?(/\Aresolve:[a-zA-Z0-9_-]+\z/)
+    if bug['ui_bug'] && key.start_with?('resolve') && bug['operations'].dig('attachment', 'status') != 'done'
+      # UI 缺陷先让 TAPD 回读到截图，避免代码或测试通过后没有可见证据就流转已解决。
+      raise Error, 'ui screenshot attachment required before resolution'
+    end
     operation = bug['operations'][key]
     case command
     when 'intent'
@@ -167,6 +181,23 @@ module TapdBatchState
 
   def full_sha?(value)
     value.is_a?(String) && value.match?(/\A[0-9a-f]{40}\z/)
+  end
+
+  def validate_ui_screenshots!(state, screenshots)
+    raise Error, 'ui_screenshots required for UI bug' unless screenshots.is_a?(Array) && !screenshots.empty?
+    screenshots.map do |screenshot|
+      raise Error, 'ui screenshot entry must be an object' unless screenshot.is_a?(Hash)
+      path = screenshot.fetch('path')
+      expected_sha = screenshot.fetch('sha256')
+      raise Error, 'ui screenshot path must be absolute' unless path.is_a?(String) && path.start_with?('/')
+      raise Error, 'ui screenshot must exist and be nonempty' unless File.file?(path) && File.size(path).positive?
+      resolved_path = File.realpath(path)
+      repo = File.realpath(state.fetch('repo'))
+      raise Error, 'ui screenshot must be stored outside repository' if resolved_path == repo || resolved_path.start_with?(repo + '/')
+      raise Error, 'ui screenshot SHA-256 required' unless expected_sha.is_a?(String) && expected_sha.match?(/\A[0-9a-f]{64}\z/)
+      raise Error, 'ui screenshot SHA-256 mismatch' unless Digest::SHA256.file(resolved_path).hexdigest == expected_sha
+      { 'path' => resolved_path, 'sha256' => expected_sha }
+    end
   end
 
   def synchronize(state, command, input)
@@ -217,8 +248,9 @@ module TapdBatchState
 
   def report(state, input)
     complete = state['frozen'] && state['bugs'].all? do |bug|
+      required_operations = bug['ui_bug'] ? %w[attachment comment resolve] : %w[comment resolve]
       bug['status'] == 'COMMITTED' && !bug['remote_changed'] &&
-        %w[comment resolve].all? { |op| bug['operations'].dig(op, 'status') == 'done' } &&
+        required_operations.all? { |op| bug['operations'].dig(op, 'status') == 'done' } &&
         bug['operations'].values.all? { |op| op['status'] == 'done' }
     end
     pushed = state.dig('sync', 'status') == 'PUSHED'

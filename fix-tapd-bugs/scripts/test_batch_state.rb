@@ -21,16 +21,25 @@ class BatchStateTest < Minitest::Test
     TapdBatchState.run(command, @path, data)
   end
 
-  def start(acceptance = false, ids = %w[1])
+  def start(acceptance = false, ids = %w[1], ui_ids: [])
     call('init', 'repo' => @repo, 'batch_id' => 'test', 'source_head' => @sha,
          'source_fingerprint' => @payload, 'require_acceptance' => acceptance,
-         'bugs' => ids.map { |id| { 'id' => id, 'url' => "https://example.test/#{id}", 'snapshot' => 'v1' } })
+         'bugs' => ids.map { |id| {
+           'id' => id, 'url' => "https://example.test/#{id}", 'snapshot' => 'v1',
+           'ui_bug' => ui_ids.include?(id)
+         } })
   end
 
   def validate(id = '1')
     call('update', 'bug_id' => id, 'status' => 'FIXING')
+    verification = %w[tests build static review].to_h { |k| [k, 'passed evidence'] }
+    if call('show')['bugs'].find { |bug| bug['id'] == id }['ui_bug']
+      path = File.join(@tmp, "ui-#{id}.png")
+      File.binwrite(path, "runtime screenshot for #{id}")
+      verification['ui_screenshots'] = [{ 'path' => path, 'sha256' => Digest::SHA256.file(path).hexdigest }]
+    end
     call('update', 'bug_id' => id, 'status' => 'VALIDATED',
-         'verification' => %w[tests build static review].to_h { |k| [k, 'passed evidence'] })
+         'verification' => verification)
   end
 
   def commit(id = '1')
@@ -77,6 +86,66 @@ class BatchStateTest < Minitest::Test
     assert_equal [@sha], freeze_after_push['frozen']['commit_shas']
     assert_equal 0o600, File.stat(@path).mode & 0o777
     assert_equal 0o700, File.stat(File.dirname(@path)).mode & 0o777
+  end
+
+  def test_new_batch_requires_explicit_ui_classification
+    assert_raises(TapdBatchState::Error) do
+      call('init', 'repo' => @repo, 'batch_id' => 'test', 'source_head' => @sha,
+           'source_fingerprint' => @payload, 'bugs' => [{
+             'id' => '1', 'url' => 'https://example.test/1', 'snapshot' => 'v1'
+           }])
+    end
+    assert_raises(TapdBatchState::Error) do
+      call('init', 'repo' => @repo, 'batch_id' => 'test', 'source_head' => @sha,
+           'source_fingerprint' => @payload, 'bugs' => [{
+             'id' => '1', 'url' => 'https://example.test/1', 'snapshot' => 'v1', 'ui_bug' => 'true'
+           }])
+    end
+  end
+
+  def test_ui_bug_requires_real_external_screenshot_with_matching_hash
+    start(false, %w[1], ui_ids: %w[1])
+    call('update', 'bug_id' => '1', 'status' => 'FIXING')
+    verification = %w[tests build static review].to_h { |key| [key, 'passed evidence'] }
+    assert_raises(TapdBatchState::Error) do
+      call('update', 'bug_id' => '1', 'status' => 'VALIDATED', 'verification' => verification)
+    end
+
+    path = File.join(@tmp, 'ui.png')
+    File.binwrite(path, 'runtime screenshot')
+    verification['ui_screenshots'] = [{ 'path' => path, 'sha256' => '0' * 64 }]
+    assert_raises(TapdBatchState::Error) do
+      call('update', 'bug_id' => '1', 'status' => 'VALIDATED', 'verification' => verification)
+    end
+
+    repository_path = File.join(@repo, 'ui.png')
+    File.binwrite(repository_path, 'runtime screenshot')
+    verification['ui_screenshots'] = [{
+      'path' => repository_path, 'sha256' => Digest::SHA256.file(repository_path).hexdigest
+    }]
+    assert_raises(TapdBatchState::Error) do
+      call('update', 'bug_id' => '1', 'status' => 'VALIDATED', 'verification' => verification)
+    end
+
+    verification['ui_screenshots'] = [{ 'path' => path, 'sha256' => Digest::SHA256.file(path).hexdigest }]
+    state = call('update', 'bug_id' => '1', 'status' => 'VALIDATED', 'verification' => verification)
+    assert_equal File.realpath(path), state['bugs'][0].dig('verification', 'ui_screenshots', 0, 'path')
+  end
+
+  def test_ui_bug_requires_tapd_screenshot_receipt_before_resolution
+    start(false, %w[1], ui_ids: %w[1])
+    validate
+    commit
+    freeze_after_push
+    intent('comment')
+    receipt('comment')
+    assert_raises(TapdBatchState::Error) { intent('resolve') }
+    assert_equal 'PARTIAL', call('report', 'delivery_status' => 'published')['status']
+    intent('attachment')
+    receipt('attachment')
+    intent('resolve')
+    receipt('resolve')
+    assert_equal 'COMPLETE', call('report', 'delivery_status' => 'published')['status']
   end
 
   def test_success_subset_remains_partial
@@ -232,6 +301,7 @@ class BatchStateTest < Minitest::Test
     legacy = call('show')
     legacy.delete('sync')
     legacy['schema_version'] = 1
+    legacy['bugs'].each { |bug| bug.delete('ui_bug') }
     File.write(@path, JSON.generate(legacy))
     assert_equal 'PARTIAL', call('report', 'delivery_status' => 'published')['status']
     refute call('report')['pushed']
