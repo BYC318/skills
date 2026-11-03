@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "b5187b8d-6526-4734-a085-6b555e453082",
+  "path": "remote-page-development",
+  "path_key": "remote-page-development",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

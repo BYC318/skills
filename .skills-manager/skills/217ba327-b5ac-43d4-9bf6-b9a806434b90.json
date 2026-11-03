@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "217ba327-b5ac-43d4-9bf6-b9a806434b90",
+  "path": "kothar-mcp-update",
+  "path_key": "kothar-mcp-update",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

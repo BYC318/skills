@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "3d543286-5f39-4c88-9e05-cf6e0dff3701",
+  "path": "artifact-template-weekly-report",
+  "path_key": "artifact-template-weekly-report",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

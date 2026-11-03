@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "df5ae635-1308-486c-9013-0b8a8098158f",
+  "path": "dual-platform-development",
+  "path_key": "dual-platform-development",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

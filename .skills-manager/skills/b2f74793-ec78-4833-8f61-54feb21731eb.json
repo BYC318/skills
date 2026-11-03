@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "b2f74793-ec78-4833-8f61-54feb21731eb",
+  "path": "swift-code-standards",
+  "path_key": "swift-code-standards",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

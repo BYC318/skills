@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "e60d5f27-0881-47bd-bb94-2f6d45633cb8",
+  "path": "dual-platform-development/assets/project-template/.agents/skills/codex-task-coordination",
+  "path_key": "dual-platform-development/assets/project-template/.agents/skills/codex-task-coordination",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

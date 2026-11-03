@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "34d7e18c-5c14-4d62-bfff-44b692c713f3",
+  "path": "rswift-resource-references",
+  "path_key": "rswift-resource-references",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

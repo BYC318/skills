@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "3dbc0261-d7c8-4a4c-a388-3a4441d9bbb7",
+  "path": "ios-simulator-flow-verifier",
+  "path_key": "ios-simulator-flow-verifier",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

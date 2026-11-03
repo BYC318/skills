@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "2b9d0ddd-d30f-413a-a6c7-7e18d5352526",
+  "path": "commenting-business-intent",
+  "path_key": "commenting-business-intent",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

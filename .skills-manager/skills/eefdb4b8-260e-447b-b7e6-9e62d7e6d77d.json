@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "eefdb4b8-260e-447b-b7e6-9e62d7e6d77d",
+  "path": "kothar-figma-to-code",
+  "path_key": "kothar-figma-to-code",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "669b303c-6fda-4c01-8d3a-bed297d6f421",
+  "path": "git-pull-resolve",
+  "path_key": "git-pull-resolve",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

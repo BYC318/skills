@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "db1cfc3f-b4f6-4d20-b6b5-5cd9454f6310",
+  "path": "ios-engineering-guide",
+  "path_key": "ios-engineering-guide",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

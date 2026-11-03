@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "3a93eead-75f1-4629-a85b-4c609818dc56",
+  "path": "fix-tapd-bugs",
+  "path_key": "fix-tapd-bugs",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "1f5dd99f-201e-4b80-ab35-c480ded860c5",
+  "path": "reuse-before-building",
+  "path_key": "reuse-before-building",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

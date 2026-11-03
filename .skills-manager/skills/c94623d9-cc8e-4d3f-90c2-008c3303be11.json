@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "c94623d9-cc8e-4d3f-90c2-008c3303be11",
+  "path": "project-memory",
+  "path_key": "project-memory",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

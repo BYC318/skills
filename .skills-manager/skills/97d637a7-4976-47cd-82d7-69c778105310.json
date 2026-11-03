@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "97d637a7-4976-47cd-82d7-69c778105310",
+  "path": "uikit-layout-standards",
+  "path_key": "uikit-layout-standards",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

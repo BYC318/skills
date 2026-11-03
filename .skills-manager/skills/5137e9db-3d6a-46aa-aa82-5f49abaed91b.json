@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "5137e9db-3d6a-46aa-aa82-5f49abaed91b",
+  "path": "prune-unused-code-resources",
+  "path_key": "prune-unused-code-resources",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "ccd3d6ef-98cb-46ff-aedf-a52ab7051635",
+  "path": "prefer-local-spm-cache",
+  "path_key": "prefer-local-spm-cache",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

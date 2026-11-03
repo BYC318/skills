@@ -6,3 +6,6 @@ crypto-field-notes
 __pycache__/
 *.pyc
 /dual-platform-development通用模板.zip
+Thumbs.db
+*.tmp
+.skills-manager.lock

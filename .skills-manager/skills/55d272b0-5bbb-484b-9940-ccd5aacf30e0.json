@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "55d272b0-5bbb-484b-9940-ccd5aacf30e0",
+  "path": "git-commit-spec",
+  "path_key": "git-commit-spec",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}

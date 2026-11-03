@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "f0e0c692-3c9e-4ac1-9a1d-d80041346377",
+  "path": "wecomcli-shared",
+  "path_key": "wecomcli-shared",
+  "enabled": true,
+  "tags": [],
+  "source": {
+    "type": "import",
+    "ref": null,
+    "subpath": null,
+    "branch": null
+  }
+}
